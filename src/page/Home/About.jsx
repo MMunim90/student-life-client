@@ -3,6 +3,7 @@ import ThemeButton from "../../sharedItem/ThemeButton";
 import { ImMail2 } from "react-icons/im";
 import { BsWhatsapp } from "react-icons/bs";
 import founder from "../../assets/founder.png"
+import Navbar from "../../sharedItem/Navbar";
 
 const classes = {
   section: "w-full max-w-6xl mx-auto px-4 sm:px-6 lg:px-8",
@@ -121,7 +122,7 @@ const About = () => {
                     <img src={founder} alt="Founder" />
                   </div>
                 </div>
-                <h3 className="card-title mt-4">Munim</h3>
+                <h3 className="card-title mt-4">MMunim</h3>
                 <p className="text-base-content/70">Founder & Lead Developer</p>
               </div>
             </div>
@@ -239,7 +240,7 @@ const About = () => {
       </section>
 
             {/* Privacy Policy Section */}
-      <section className="py-12 sm:py-16 bg-base-100 border-t border-base-300">
+      <section className="py-12 sm:py-16">
         <div className={classes.section}>
           <h2 className="text-3xl sm:text-4xl font-bold mb-6 text-center">
             Privacy Policy
@@ -278,7 +279,7 @@ const About = () => {
 
 
       {/* Call to Action / Contact */}
-      <section className="py-12 sm:py-16 bg-base-100 border-t border-base-300">
+      <section className="py-12 sm:py-16">
         <div className="text-center max-w-2xl mx-auto">
           <h2 className="text-3xl sm:text-4xl font-bold mb-4">Get in Touch</h2>
           <p className="text-base-content/80 mb-6">
@@ -299,6 +300,7 @@ const About = () => {
       </section>
 
       <ThemeButton />
+      <Navbar></Navbar>
     </div>
   );
 };
