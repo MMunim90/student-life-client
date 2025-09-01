@@ -7,6 +7,12 @@ import RootLayout from "../layouts/RootLayout";
 import Home from "../page/Home/Home";
 import PrivateRoute from "../routes/PrivateRoute";
 import ErrorPage from "../page/ErrorPage/ErrorPage";
+import About from "../page/Home/About";
+import ClassSchedule from "../page/Home/ClassSchedule";
+import BudgetTracker from "../page/Home/BudgetTracker";
+import ExamQA from "../page/Home/ExamQA";
+import StudyPlanner from "../page/Home/StudyPlanner";
+import Profile from "../page/Home/Profile";
 
 export const router = createBrowserRouter([
   {
@@ -46,6 +52,30 @@ export const router = createBrowserRouter([
       {
         path: "home",
         Component: Home,
+      },
+      {
+        path: "about",
+        Component: About,
+      },
+      {
+        path: "class",
+        Component: ClassSchedule,
+      },
+      {
+        path: "budget",
+        Component: BudgetTracker,
+      },
+      {
+        path: "exam",
+        Component:ExamQA,
+      },
+      {
+        path: "study",
+        Component: StudyPlanner,
+      },
+      {
+        path: "profile",
+        Component: Profile,
       },
     ],
   },

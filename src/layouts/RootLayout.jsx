@@ -1,19 +1,15 @@
 import React, { useContext, useState } from "react";
 import { Link, NavLink, Outlet } from "react-router";
-import {
-  FaCheckCircle,
-  FaFacebook,
-  FaHeart,
-  FaStar,
-  FaTwitter,
-  FaUserCircle,
-  FaWhatsapp,
-} from "react-icons/fa";
+import { FaPlus, FaUsers } from "react-icons/fa";
 // import useAxios from "../hooks/useAxios";
 import Logo from "../sharedItem/logo";
 import { LogOut } from "lucide-react";
 import Swal from "sweetalert2";
 import { AuthContext } from "../context/AuthContext/AuthContext";
+import { GoHomeFill } from "react-icons/go";
+import { GrSchedules } from "react-icons/gr";
+import { GiMoneyStack } from "react-icons/gi";
+import { PiExam, PiExamBold, PiStudent, PiStudentBold } from "react-icons/pi";
 
 const RootLayout = () => {
   const { user, logOut } = useContext(AuthContext);
@@ -86,7 +82,9 @@ const RootLayout = () => {
         <ul className="flex flex-col justify-between menu min-h-full w-auto p-8 border-r border-gray-500 bg-white text-black">
           {/* Sidebar content here */}
           <div>
-            <Logo></Logo>
+            <div className="mt-4">
+              <Logo></Logo>
+            </div>
             {/* <div className="text-center">
               <img
                 src={user?.photoURL || "https://i.ibb.co.com/990my6Yq/avater.png"}
@@ -105,56 +103,120 @@ const RootLayout = () => {
                   <NavLink
                     to="/app/home"
                     className={({ isActive }) =>
-                      `flex items-center gap-2 px-3 py-2 rounded ${
+                      `flex items-center gap-2 px-3 py-2 rounded text-lg ${
                         isActive
                           ? "text-blue-600 font-semibold"
                           : "hover:text-blue-500"
                       }`
                     }
                   >
-                    <FaUserCircle /> My Profile
+                    <GoHomeFill /> Home
                   </NavLink>
                 </li>
                 <li>
                   <NavLink
-                    to="/dashboard/wishlist"
+                    to="/app/about"
                     className={({ isActive }) =>
-                      `flex items-center gap-2 px-3 py-2 rounded ${
+                      `flex items-center gap-2 px-3 py-2 rounded text-lg ${
                         isActive
                           ? "text-blue-600 font-semibold"
                           : "hover:text-blue-500"
                       }`
                     }
                   >
-                    <FaHeart /> Wishlist
+                    <FaUsers /> About Us
                   </NavLink>
                 </li>
                 <li>
                   <NavLink
-                    to="/dashboard/propertyBought"
+                    to="/app/create"
                     className={({ isActive }) =>
-                      `flex items-center gap-2 px-3 py-2 rounded ${
+                      `flex items-center gap-2 px-3 py-2 rounded text-lg ${
                         isActive
                           ? "text-blue-600 font-semibold"
                           : "hover:text-blue-500"
                       }`
                     }
                   >
-                    <FaCheckCircle /> Property Bought
+                    <FaPlus /> Create
                   </NavLink>
                 </li>
                 <li>
                   <NavLink
-                    to="/dashboard/myReviews"
+                    to="/app/class"
                     className={({ isActive }) =>
-                      `flex items-center gap-2 px-3 py-2 rounded ${
+                      `flex items-center gap-2 px-3 py-2 rounded text-lg ${
                         isActive
                           ? "text-blue-600 font-semibold"
                           : "hover:text-blue-500"
                       }`
                     }
                   >
-                    <FaStar /> My Reviews
+                    <GrSchedules /> Class schedule
+                  </NavLink>
+                </li>
+                <li>
+                  <NavLink
+                    to="/app/budget"
+                    className={({ isActive }) =>
+                      `flex items-center gap-2 px-3 py-2 rounded text-lg ${
+                        isActive
+                          ? "text-blue-600 font-semibold"
+                          : "hover:text-blue-500"
+                      }`
+                    }
+                  >
+                    <GiMoneyStack /> Budget tracker
+                  </NavLink>
+                </li>
+                <li>
+                  <NavLink
+                    to="/app/exam"
+                    className={({ isActive }) =>
+                      `flex items-center gap-2 px-3 py-2 rounded text-lg ${
+                        isActive
+                          ? "text-blue-600 font-semibold"
+                          : "hover:text-blue-500"
+                      }`
+                    }
+                  >
+                    <PiExamBold /> Exam Q&A
+                  </NavLink>
+                </li>
+                <li>
+                  <NavLink
+                    to="/app/study"
+                    className={({ isActive }) =>
+                      `flex items-center gap-2 px-3 py-2 rounded text-lg ${
+                        isActive
+                          ? "text-blue-600 font-semibold"
+                          : "hover:text-blue-500"
+                      }`
+                    }
+                  >
+                    <PiStudentBold /> Study planner
+                  </NavLink>
+                </li>
+                <li>
+                  <NavLink
+                    to="/app/profile"
+                    className={({ isActive }) =>
+                      `py-2 rounded text-lg ${
+                        isActive
+                          ? "text-blue-600 font-semibold"
+                          : "hover:text-blue-500"
+                      }`
+                    }
+                  >
+                    <img
+                      src={
+                        user?.photoURL ||
+                        "https://i.ibb.co.com/990my6Yq/avater.png"
+                      }
+                      alt="profile"
+                      className="w-8 h-8 object-cover rounded-full mx-auto"
+                    />{" "}
+                    Profile
                   </NavLink>
                 </li>
               </>
