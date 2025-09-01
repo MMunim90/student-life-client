@@ -1,12 +1,37 @@
 import React from 'react';
 import ThemeButton from '../../sharedItem/ThemeButton';
+import { ImMail2 } from 'react-icons/im';
+import { BsWhatsapp } from 'react-icons/bs';
 
 const Home = () => {
     return (
-        <div className=''>
-            <p>this is Home</p>
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Magnam cum laudantium expedita magni ex fuga delectus consequuntur reprehenderit vitae quisquam aspernatur est beatae quae molestiae, accusantium totam nulla reiciendis cumque sequi quibusdam ab rem architecto. Veritatis non in, sit libero sunt alias deserunt possimus maiores cumque asperiores adipisci pariatur autem iusto accusantium vero. Culpa qui deserunt eum amet fuga veritatis placeat aliquid, modi quae accusantium eius dolor, consequuntur autem error reprehenderit! Commodi voluptatum nihil omnis accusantium distinctio, eaque natus sequi reprehenderit cumque placeat corporis ratione. Saepe neque odit explicabo tempora accusamus. Consequatur ipsam, rem minus obcaecati placeat ex tempore eveniet ullam aperiam enim aliquid officiis temporibus expedita, sed ab eum consequuntur! Earum quod deleniti dolor consectetur perferendis quia aperiam adipisci aliquid corporis beatae ratione sit ipsam possimus facilis accusamus, doloremque totam incidunt necessitatibus officiis porro! Rem, velit iure? Eos ducimus optio delectus velit incidunt quisquam, voluptas unde expedita ut ad repudiandae numquam hic animi veniam reiciendis ab! Iure exercitationem odio hic cupiditate, nam dicta doloremque iste quidem dolorem esse voluptas fugit reprehenderit nostrum consequuntur modi nisi ex voluptatum ea vel quisquam consequatur tenetur ducimus? Eligendi atque porro illum distinctio eaque facilis aperiam ullam optio deleniti ab impedit corporis voluptas vitae molestiae, totam veritatis fuga adipisci. Quidem eius mollitia nisi sapiente repellat placeat quibusdam architecto impedit, a quo earum, necessitatibus quis quam tenetur! Provident est quia voluptates neque, laudantium, vel numquam nemo nulla nobis, tenetur labore! Suscipit ratione molestiae quidem quas exercitationem expedita, blanditiis esse deleniti eum neque fugit et illum velit voluptatum voluptatibus corporis soluta atque nobis accusantium quam. Temporibus tempore optio esse qui nihil! Natus illum velit sed voluptates temporibus! Odio eveniet sapiente alias voluptatum autem deleniti necessitatibus praesentium enim expedita unde eius labore facere tempore aliquam similique aut sit id tempora veritatis, harum dolores dolorum voluptatem consequuntur. Accusantium eligendi vero distinctio sit sunt aliquam nesciunt, ratione sint qui hic enim quibusdam placeat repellendus sed voluptas temporibus magnam nulla quo voluptate autem nobis necessitatibus! Non est accusamus at. Numquam recusandae voluptatibus, error tempore labore nisi esse atque impedit at nam ea temporibus odit, laudantium quos suscipit excepturi facilis facere doloremque, veniam nemo eos consequatur ipsam? Sint ad quia officia fugiat error praesentium laborum nam distinctio debitis voluptatem, sequi molestias, natus fuga et odit tempora odio consequuntur reprehenderit soluta esse voluptates maxime eveniet nemo quo? Ipsa tenetur vel ea ut assumenda praesentium quas eos voluptatum dignissimos magnam eum atque error totam impedit voluptatem quidem voluptate numquam, modi dolores. Quis velit, harum vel tenetur, eligendi eveniet, praesentium consequuntur officia expedita omnis doloremque! Quo beatae neque, veritatis debitis eaque deleniti. Cum minima harum commodi quisquam laborum nulla vitae aspernatur dicta est voluptatem! Excepturi aliquam nesciunt soluta facilis, cumque quo alias numquam porro nisi architecto fugit vero, possimus ad necessitatibus doloribus amet. Expedita et impedit quos perspiciatis repellendus ea mollitia consectetur dolor, quia voluptatem facilis repellat corporis exercitationem iusto provident delectus blanditiis, sunt molestias libero a minus. Aliquam voluptas ducimus ea aspernatur ipsa eligendi cumque, nemo provident consectetur, enim facilis temporibus maxime similique!
+        <div>
             <ThemeButton></ThemeButton>
+            
+            <div className='w-11/12 mx-auto my-3 grid grid-cols-12 gap-5 mt-6'>
+            <section className='main col-span-11 xl:col-span-8'>
+                <p>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Quisquam repellendus tenetur nisi omnis aliquid distinctio dolores iusto at eos libero porro fugiat dicta rem excepturi rerum eius aperiam vel exercitationem molestias, nobis eaque quam, impedit ullam? Facilis commodi harum, sunt exercitationem sed non voluptate! Ab illo fuga nemo ipsam omnis?
+                </p>
+            </section>
+
+            <aside className='hidden xl:block col-span-3 sticky top-0 h-fit'>
+                <div className='space-y-3 mb-4'>
+                    <div className='border-2 px-4 py-2'>
+                        <h1 className='text-2xl mb-2 border-b-2 pb-2'>Sponsor</h1>
+                    </div>
+                    <div className='border-2 px-4 py-2'>
+                        <h1 className='text-2xl mb-2 border-b-2 pb-2'>Contact</h1>
+                        <div className='space-y-2'>
+                            <p className='flex gap-3 text-lg items-center'><ImMail2 size={20}/>shahan.al.munim<br />@gmail.com</p>
+                            <p className='flex gap-3 text-lg items-center'>
+                            <BsWhatsapp size={20} />+8801705620458</p>
+                        </div>
+                    </div>
+                </div>
+                <p>&copy; {new Date().getFullYear()} BrainBox by MMunim</p>
+            </aside>
+            </div>
+
         </div>
     );
 };
