@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useState } from "react";
 import { Link, NavLink, Outlet } from "react-router";
 import {
   FaCheckCircle,
@@ -9,34 +9,37 @@ import {
   FaUserCircle,
   FaWhatsapp,
 } from "react-icons/fa";
-import useAuth from "../hooks/useAuth";
-// import useUserRole from "../hooks/useUserRole";
-import useAxios from "../hooks/useAxios";
+// import useAxios from "../hooks/useAxios";
 import Logo from "../sharedItem/logo";
+import { LogOut } from "lucide-react";
+import Swal from "sweetalert2";
+import { AuthContext } from "../context/AuthContext/AuthContext";
 
 const RootLayout = () => {
-  const { user } = useAuth();
-//   const { role, loading } = useUserRole();
-  const [socials, setSocials] = useState({});
+  const { user, logOut } = useContext(AuthContext);
   const [error, setError] = useState(null);
-  const axiosInstance = useAxios();
+  // const axiosInstance = useAxios();
 
-  useEffect(() => {
-    if (!user?.email) return;
+  const handleLogOut = () => {
+    logOut()
+      .then(() => {
+        Swal.fire({
+          title: "Log Out Successfully!",
+          icon: "success",
+          confirmButtonColor: "#01AFF7",
+        });
+      })
+      .catch((error) => {
+        const errorCode = error.code;
+        const errorMessage = error.message;
 
-    const fetchSocialLinks = async () => {
-      try {
-        const res = await axiosInstance.get(
-          `/users/socials?email=${user.email}`
-        );
-        setSocials(res.data);
-      } catch (err) {
-        setError(err.response?.data?.error || "Failed to fetch social links");
-      }
-    };
-
-    fetchSocialLinks();
-  }, [user?.email, axiosInstance]);
+        Swal.fire({
+          icon: "error",
+          title: "Oops...",
+          text: `${errorMessage} (${errorCode})`,
+        });
+      });
+  };
 
   if (error) return <p className="text-red-500 text-center mt-4">{error}</p>;
 
@@ -92,36 +95,6 @@ const RootLayout = () => {
               />
               <h2 className="font-semibold my-2">{user.displayName}</h2>
               <p className="text-sm text-gray-500 mb-2">{user.email}</p>
-
-              <div className="flex gap-4 justify-center mb-4">
-                {socials?.facebook && (
-                  <a
-                    href={socials.facebook}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    <FaFacebook className="text-blue-600 text-2xl" />
-                  </a>
-                )}
-                {socials?.twitter && (
-                  <a
-                    href={socials.twitter}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    <FaTwitter className="text-sky-500 text-2xl" />
-                  </a>
-                )}
-                {socials?.whatsapp && (
-                  <a
-                    href={socials.whatsapp}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    <FaWhatsapp className="text-green-500 text-2xl" />
-                  </a>
-                )}
-              </div>
             </div>
             <div className="border border-blue-400 text-black mb-4"></div> */}
 
@@ -188,16 +161,15 @@ const RootLayout = () => {
             )}
           </div>
 
-
-          {/* <div>
-            <Link
-              to="/"
-              className="flex items-center gap-2 mt-20 md:mt-36 lg:mt-0 ml-0 lg:ml-4"
+          <div>
+            <button
+              onClick={handleLogOut}
+              className="flex items-center gap-2 mt-20 md:mt-36 lg:mt-0 ml-2 lg:ml-4 cursor-pointer"
             >
-              <img src={logo} alt="BrickBase Logo" className="w-8 h-8" />
-              <span className="text-xl font-bold">BrickBase</span>
-            </Link>
-          </div> */}
+              <LogOut className="w-6 h-6 mr-2" />
+              <span className="text-xl font-bold">Log Out</span>
+            </button>
+          </div>
         </ul>
       </div>
     </div>

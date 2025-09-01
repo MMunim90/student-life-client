@@ -71,7 +71,7 @@ const Register = () => {
           });
 
         Swal.fire({
-          title: `${user} Registration Successful!`,
+          title: `${user.displayName} Registration Successful!`,
           icon: "success",
           confirmButtonColor: "#01AFF7",
         });
