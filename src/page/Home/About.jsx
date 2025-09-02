@@ -2,7 +2,7 @@ import React from "react";
 import ThemeButton from "../../sharedItem/ThemeButton";
 import { ImMail2 } from "react-icons/im";
 import { BsWhatsapp } from "react-icons/bs";
-import founder from "../../assets/founder.png"
+import founder from "../../assets/founder.png";
 import Navbar from "../../sharedItem/Navbar";
 
 const classes = {
@@ -45,9 +45,13 @@ const About = () => {
             </div>
             <div>
               <img
+                data-aos="fade-left"
+                data-aos-anchor="#example-anchor"
+                data-aos-offset="500"
+                data-aos-duration="2000"
                 src="https://www.eschoolnews.com/files/2023/12/collaborative-learning.jpeg"
                 alt="Students collaborating"
-                className="rounded-2xl shadow-md object-cover w-full h-72"
+                className="rounded-2xl shadow-md object-cover w-full h-72 animate-pulse"
               />
             </div>
           </div>
@@ -73,11 +77,15 @@ const About = () => {
       {/* Values Section */}
       <section className="py-12 sm:py-16">
         <div className={classes.section}>
-          <h2 className="text-center mb-10 text-3xl sm:text-4xl font-bold tracking-tight">
+          <h2 className="text-center mb-24 text-3xl sm:text-4xl font-bold tracking-tight">
             Our Core Values
           </h2>
           <div className="grid md:grid-cols-3 gap-8">
-            <div className="card bg-base-100 shadow-md border border-base-300">
+            <div
+              data-aos="zoom-in-up"
+              data-aos-duration="1000"
+              className="card bg-base-100 shadow-md border border-base-300 animate-pulse hover:shadow-2xl"
+            >
               <div className="card-body">
                 <h3 className="card-title">Simplicity</h3>
                 <p>
@@ -86,7 +94,12 @@ const About = () => {
                 </p>
               </div>
             </div>
-            <div className="card bg-base-100 shadow-md border border-base-300">
+            <div
+              data-aos="zoom-in-up"
+              data-aos-duration="2000"
+              className="card bg-base-100 shadow-md border border-base-300 animate-pulse hover:shadow-2xl"
+              style={{ animationDelay: "0.5s" }}
+            >
               <div className="card-body">
                 <h3 className="card-title">Collaboration</h3>
                 <p>
@@ -95,7 +108,11 @@ const About = () => {
                 </p>
               </div>
             </div>
-            <div className="card bg-base-100 shadow-md border border-base-300">
+            <div
+              data-aos="zoom-in-up"
+              data-aos-duration="3000"
+              className="card bg-base-100 shadow-md border border-base-300 animate-pulse hover:shadow-2xl"
+            >
               <div className="card-body">
                 <h3 className="card-title">Innovation</h3>
                 <p>
@@ -114,7 +131,10 @@ const About = () => {
           <h2 className="text-center mb-10 text-3xl sm:text-4xl font-bold tracking-tight">
             Meet the Team
           </h2>
-          <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-8">
+          <div
+            data-aos="zoom-out-up"
+            className="grid sm:grid-cols-2 md:grid-cols-3 gap-8"
+          >
             <div className="card bg-base-100 shadow-md border border-base-300">
               <div className="card-body items-center text-center">
                 <div className="avatar">
@@ -170,7 +190,11 @@ const About = () => {
             Frequently Asked Questions
           </h2>
           <div className="max-w-3xl mx-auto space-y-4">
-            <div className="collapse collapse-arrow border border-base-300 bg-base-100">
+            <div
+              data-aos="fade-right"
+              data-aos-duration="2000"
+              className="collapse collapse-arrow border border-base-300 bg-base-100"
+            >
               <input type="checkbox" />
               <div className="collapse-title text-lg font-medium">
                 What is BrainBox?
@@ -184,7 +208,11 @@ const About = () => {
               </div>
             </div>
 
-            <div className="collapse collapse-arrow border border-base-300 bg-base-100">
+            <div
+              data-aos="fade-left"
+              data-aos-duration="4000"
+              className="collapse collapse-arrow border border-base-300 bg-base-100"
+            >
               <input type="checkbox" />
               <div className="collapse-title text-lg font-medium">
                 Is BrainBox free to use?
@@ -197,7 +225,11 @@ const About = () => {
               </div>
             </div>
 
-            <div className="collapse collapse-arrow border border-base-300 bg-base-100">
+            <div
+              data-aos="fade-right"
+              data-aos-duration="6000"
+              className="collapse collapse-arrow border border-base-300 bg-base-100"
+            >
               <input type="checkbox" />
               <div className="collapse-title text-lg font-medium">
                 Who can use BrainBox?
@@ -210,7 +242,11 @@ const About = () => {
               </div>
             </div>
 
-            <div className="collapse collapse-arrow border border-base-300 bg-base-100">
+            <div
+              data-aos="fade-left"
+              data-aos-duration="8000"
+              className="collapse collapse-arrow border border-base-300 bg-base-100"
+            >
               <input type="checkbox" />
               <div className="collapse-title text-lg font-medium">
                 Can I use BrainBox offline?
@@ -223,7 +259,11 @@ const About = () => {
               </div>
             </div>
 
-            <div className="collapse collapse-arrow border border-base-300 bg-base-100">
+            <div
+              data-aos="fade-right"
+              data-aos-duration="10000"
+              className="collapse collapse-arrow border border-base-300 bg-base-100"
+            >
               <input type="checkbox" />
               <div className="collapse-title text-lg font-medium">
                 How can I contact support?
@@ -239,7 +279,7 @@ const About = () => {
         </div>
       </section>
 
-            {/* Privacy Policy Section */}
+      {/* Privacy Policy Section */}
       <section className="py-12 sm:py-16">
         <div className={classes.section}>
           <h2 className="text-3xl sm:text-4xl font-bold mb-6 text-center">
@@ -266,8 +306,9 @@ const About = () => {
             By accessing and using BrainBox, you agree to abide by our terms and
             conditions. You are responsible for maintaining the security of your
             account and using our tools in a lawful and respectful manner.
-            Misuse of BrainBox, including unauthorized access, data manipulation,
-            or harmful activities, may result in suspension of your account.
+            Misuse of BrainBox, including unauthorized access, data
+            manipulation, or harmful activities, may result in suspension of
+            your account.
           </p>
           <p className="text-base leading-7 text-base-content/80 max-w-4xl mx-auto">
             BrainBox reserves the right to update these terms at any time. We
@@ -277,9 +318,8 @@ const About = () => {
         </div>
       </section>
 
-
       {/* Call to Action / Contact */}
-      <section className="py-12 sm:py-16">
+      <section data-aos="zoom-out" data-aos-duration="2000" className="py-12 sm:py-16 mb-20 md:mb-0">
         <div className="text-center max-w-2xl mx-auto">
           <h2 className="text-3xl sm:text-4xl font-bold mb-4">Get in Touch</h2>
           <p className="text-base-content/80 mb-6">

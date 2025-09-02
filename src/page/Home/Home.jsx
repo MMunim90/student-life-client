@@ -48,7 +48,7 @@ const Home = () => {
             <ThemeButton></ThemeButton>
           </div>
           <div className="space-y-3 mb-4">
-            <div className="border-2 px-4 py-2">
+            <div className="px-4 py-2 bg-gray-400 rounded-md">
               <h1 className="text-2xl mb-2 border-b-2 pb-2">Sponsor</h1>
               <p className="mb-2">My Other Creation - </p>
               <div className="">
@@ -65,7 +65,7 @@ const Home = () => {
                 ))}
               </div>
             </div>
-            <div className="border-2 px-4 py-2">
+            <div className="border-2 px-4 py-2 rounded-md">
               <h1 className="text-2xl mb-2 border-b-2 pb-2">Contact</h1>
               <div className="space-y-2">
                 <p className="flex gap-3 text-lg items-center">

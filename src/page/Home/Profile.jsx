@@ -34,14 +34,14 @@ const Profile = () => {
         setUser({ ...user, displayName: name, photoURL: photoURL });
 
         // Update displayName in MongoDB
-        try {
-          await axiosInstance.patch("/users/updateName", {
-            email: user.email,
-            displayName: name,
-          });
-        } catch (error) {
-          console.error("Failed to update name in DB", error);
-        }
+        // try {
+        //   await axiosInstance.patch("/users/updateName", {
+        //     email: user.email,
+        //     displayName: name,
+        //   });
+        // } catch (error) {
+        //   console.error("Failed to update name in DB", error);
+        // }
 
         Swal.fire({
           title: "Great!",
@@ -49,6 +49,8 @@ const Profile = () => {
           icon: "success",
           confirmButtonColor: "#01AFF7",
         });
+
+        setIsOpen(false);
       })
       .catch((error) => {
         const errorCode = error.code;
