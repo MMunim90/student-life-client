@@ -1,18 +1,12 @@
-import React from 'react';
-import { Link, Outlet } from 'react-router';
-import useAuth from '../hooks/useAuth';
+import React from "react";
+import { Link, Outlet } from "react-router";
 
 const AuthLayout = () => {
-    const {user} = useAuth();
-    return (
-        <div>
-            {
-                !user && (
-                    <Outlet></Outlet>
-                )
-            }
-        </div>
-    );
+  return (
+    <div>
+      <Outlet></Outlet>
+    </div>
+  );
 };
 
 export default AuthLayout;

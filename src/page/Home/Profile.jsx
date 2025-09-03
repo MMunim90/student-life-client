@@ -124,7 +124,7 @@ const Profile = () => {
               {/* Close Button */}
               <button
                 onClick={() => setIsOpen(false)}
-                className="absolute top-6 right-3 text-gray-500 hover:text-gray-700 text-2xl"
+                className="absolute top-6 right-3 text-gray-300 hover:text-gray-400 text-2xl"
               >
                 <IoCloseSharp />
               </button>

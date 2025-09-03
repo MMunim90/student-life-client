@@ -6,6 +6,7 @@ import { GrSchedules } from "react-icons/gr";
 import { GiMoneyStack } from "react-icons/gi";
 import { PiExamBold, PiStudentBold } from "react-icons/pi";
 import useAuth from "../hooks/useAuth";
+import UploadForm from "../components/UploadForm";
 
 const Navbar = () => {
   const { user } = useAuth();
@@ -94,6 +95,24 @@ const Navbar = () => {
           </NavLink>
         </li>
       </ul>
+
+      {/* Modal for Create */}
+      {isOpen && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black/50 z-50">
+          <div className="bg-white text-black rounded-xl shadow-lg w-11/12 max-w-4xl p-6 overflow-y-auto max-h-[90vh]">
+            <div className="flex justify-between items-center mb-2">
+              <h2 className="text-xl font-semibold">Create New Post</h2>
+              <button
+                onClick={() => setIsOpen(false)}
+                className="text-gray-600 hover:text-red-500 text-2xl font-bold"
+              >
+                ✕
+              </button>
+            </div>
+            <UploadForm></UploadForm>
+          </div>
+        </div>
+      )}
     </nav>
   );
 };

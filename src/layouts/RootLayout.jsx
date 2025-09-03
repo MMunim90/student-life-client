@@ -10,6 +10,7 @@ import { GoHomeFill } from "react-icons/go";
 import { GrSchedules } from "react-icons/gr";
 import { GiMoneyStack } from "react-icons/gi";
 import { PiExam, PiExamBold, PiStudent, PiStudentBold } from "react-icons/pi";
+import UploadForm from "../components/UploadForm";
 
 const RootLayout = () => {
   const { user, logOut } = useContext(AuthContext);
@@ -230,6 +231,24 @@ const RootLayout = () => {
           </div>
         </ul>
       </div>
+
+      {/* Modal for Create */}
+      {isOpen && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black/50 z-50">
+          <div className="bg-gray-800 text-white rounded-xl shadow-lg w-11/12 max-w-4xl p-6 overflow-y-auto max-h-[90vh]">
+            <div className="flex justify-between items-center mb-2">
+              <h2 className="text-xl font-semibold">Create New Post</h2>
+              <button
+                onClick={() => setIsOpen(false)}
+                className="text-gray-300 hover:text-gray-400 text-2xl font-bold"
+              >
+                ✕
+              </button>
+            </div>
+            <UploadForm></UploadForm>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

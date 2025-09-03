@@ -23,7 +23,7 @@ const Register = () => {
     handleSubmit,
     formState: { errors },
   } = useForm();
-//   const axiosInstance = useAxios();
+  //   const axiosInstance = useAxios();
 
   const { createUser, updateUserProfile } = useAuth();
 

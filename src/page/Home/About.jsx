@@ -319,8 +319,8 @@ const About = () => {
       </section>
 
       {/* Call to Action / Contact */}
-      <section data-aos="zoom-out" data-aos-duration="2000" className="py-12 sm:py-16 mb-20 md:mb-0">
-        <div className="text-center max-w-2xl mx-auto">
+      <section className="py-12 sm:py-16 mb-20 md:mb-0">
+        <div data-aos="zoom-out" data-aos-duration="2000" className="text-center max-w-2xl mx-auto">
           <h2 className="text-3xl sm:text-4xl font-bold mb-4">Get in Touch</h2>
           <p className="text-base-content/80 mb-6">
             Have questions, feedback, or want to collaborate? We’d love to hear
