@@ -8,16 +8,19 @@ import Navbar from "../../sharedItem/Navbar";
 
 const data = [
   {
+    id: 1,
     name: "BrickBase",
     image: "https://i.ibb.co.com/0VW7M2g4/Screenshot-2025-07-21-173448.png",
     link: "https://brickbase-47887.web.app/",
   },
   {
+    id: 2,
     name: "Runfinity",
     image: "https://i.ibb.co.com/GQK5DBPj/Screenshot-2025-08-09-001551.png",
     link: "https://marathon-management-syst-9bb4a.web.app/",
   },
   {
+    id: 3,
     name: "Find Mate",
     image: "https://i.ibb.co.com/HDCphMqd/Screenshot-2025-06-25-161456.png",
     link: "https://find-mate-app.web.app/",
@@ -53,7 +56,7 @@ const Home = () => {
               <p className="mb-2">My Other Creation - </p>
               <div className="">
                 {data.map((data) => (
-                  <div>
+                  <div key={data.id}>
                     <div className="flex gap-2 items-center mb-2">
                       <p>{data.name}</p>
                       <Link to={data.link}>

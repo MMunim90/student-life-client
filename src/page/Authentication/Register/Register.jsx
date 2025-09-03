@@ -209,7 +209,7 @@ const Register = () => {
             <SocialLogin></SocialLogin>
 
             {/* Signin Link */}
-            <p className="text-center text-sm mt-6 pb-10">
+            <p className="text-center text-sm mt-6 pb-20">
               Already have an account?{" "}
               <Link to="/login" className="text-blue-500 hover:underline">
                 Sign in

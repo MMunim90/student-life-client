@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { NavLink } from "react-router";
 import { GoHomeFill } from "react-icons/go";
 import { FaUsers, FaPlus } from "react-icons/fa";
@@ -9,6 +9,7 @@ import useAuth from "../hooks/useAuth";
 
 const Navbar = () => {
   const { user } = useAuth();
+  const [isOpen, setIsOpen] = useState(false);
   return (
     <nav className="md:hidden fixed bottom-0 left-0 right-0 bg-gray-800 text-white border-t border-gray-800">
       <ul className="flex justify-around items-center py-1">
@@ -48,14 +49,12 @@ const Navbar = () => {
         </li>
 
         <li>
-          <NavLink
-            to="/app/create"
-            className={({ isActive }) =>
-              `p-2 ${isActive ? "text-blue-500" : "hover:text-gray-400"}`
-            }
+          <button
+            onClick={() => setIsOpen(true)}
+            className="text-lg hover:text-blue-500"
           >
             <FaPlus size={24} />
-          </NavLink>
+          </button>
         </li>
 
         <li>
@@ -82,13 +81,9 @@ const Navbar = () => {
 
         <li>
           <NavLink
-            to="/app/profile"
+            to="/app/profile/myPosts"
             className={({ isActive }) =>
-              `p-1 ${
-                isActive
-                  ? ""
-                  : "hover:opacity-80"
-              }`
+              `p-1 ${isActive ? "" : "hover:opacity-80"}`
             }
           >
             <img

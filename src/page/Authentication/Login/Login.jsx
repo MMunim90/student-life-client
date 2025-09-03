@@ -130,7 +130,7 @@ const Login = () => {
             <SocialLogin></SocialLogin>
 
             {/* Signup Link */}
-            <p className="text-center text-sm mt-6 pb-10">
+            <p className="text-center text-sm mt-6 pb-20">
               Don’t have an account?{" "}
               <Link
                 to="/register"

@@ -13,6 +13,8 @@ import BudgetTracker from "../page/Home/BudgetTracker";
 import ExamQA from "../page/Home/ExamQA";
 import StudyPlanner from "../page/Home/StudyPlanner";
 import Profile from "../page/Home/Profile";
+import MyPosts from "../components/MyPosts";
+import Saved from "../components/Saved";
 
 export const router = createBrowserRouter([
   {
@@ -76,6 +78,16 @@ export const router = createBrowserRouter([
       {
         path: "profile",
         Component: Profile,
+        children: [
+          {
+            path: "myPosts",
+            Component: MyPosts,
+          },
+          {
+            path: "saved",
+            Component: Saved,
+          }
+        ]
       },
     ],
   },

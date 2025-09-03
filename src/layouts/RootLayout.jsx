@@ -13,6 +13,8 @@ import { PiExam, PiExamBold, PiStudent, PiStudentBold } from "react-icons/pi";
 
 const RootLayout = () => {
   const { user, logOut } = useContext(AuthContext);
+  // console.log(user)
+  const [isOpen, setIsOpen] = useState(false);
   const [error, setError] = useState(null);
   // const axiosInstance = useAxios();
 
@@ -128,18 +130,12 @@ const RootLayout = () => {
                   </NavLink>
                 </li>
                 <li>
-                  <NavLink
-                    to="/app/create"
-                    className={({ isActive }) =>
-                      `flex items-center gap-2 px-3 py-2 rounded text-lg ${
-                        isActive
-                          ? "text-blue-600 font-semibold"
-                          : "hover:text-blue-500"
-                      }`
-                    }
+                  <button
+                    onClick={() => setIsOpen(true)}
+                    className="text-lg hover:text-blue-500"
                   >
                     <FaPlus /> Create
-                  </NavLink>
+                  </button>
                 </li>
                 <li>
                   <NavLink
@@ -199,7 +195,7 @@ const RootLayout = () => {
                 </li>
                 <li>
                   <NavLink
-                    to="/app/profile"
+                    to="/app/profile/myPosts"
                     className={({ isActive }) =>
                       `py-2 rounded text-lg ${
                         isActive

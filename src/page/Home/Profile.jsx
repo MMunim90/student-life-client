@@ -6,12 +6,15 @@ import { CiMail } from "react-icons/ci";
 import ThemeButton from "../../sharedItem/ThemeButton";
 import useAuth from "../../hooks/useAuth";
 import { MdEdit } from "react-icons/md";
-import { FaHourglassStart } from "react-icons/fa";
+import { FaHourglassStart, FaRegBookmark } from "react-icons/fa";
 import { IoCloseSharp } from "react-icons/io5";
 import Navbar from "../../sharedItem/Navbar";
+import { NavLink, Outlet } from "react-router";
+import { TiThSmallOutline } from "react-icons/ti";
 
 const Profile = () => {
   const { user, setUser, updateUserProfile } = useAuth();
+  // console.log(user)
   const [isOpen, setIsOpen] = useState(false);
 
   const axiosInstance = useAxios();
@@ -117,7 +120,7 @@ const Profile = () => {
         {isOpen && (
           <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
             {/* Modal Content */}
-            <div className="bg-white rounded-lg shadow-lg w-full max-w-lg mx-4 p-6 relative">
+            <div className="rounded-lg shadow-2xl w-full max-w-lg mx-4 p-6 relative bg-gray-800">
               {/* Close Button */}
               <button
                 onClick={() => setIsOpen(false)}
@@ -126,8 +129,8 @@ const Profile = () => {
                 <IoCloseSharp />
               </button>
 
-              <h2 className="text-xl font-semibold text-gray-800 mb-4">
-                Update
+              <h2 className="text-xl font-semibold text-white mb-4">
+                Update Your Profile
               </h2>
 
               <form onSubmit={handleUpdateUser} className="space-y-6">
@@ -137,7 +140,7 @@ const Profile = () => {
                   id="username"
                   placeholder="New Username"
                   required
-                  className="w-full px-4 py-3 rounded-md border border-gray-300 bg-gray-50 text-black"
+                  className="w-full px-4 py-3 rounded-md border border-none bg-gray-400 text-black"
                 />
 
                 <input
@@ -146,7 +149,7 @@ const Profile = () => {
                   id="photoURL"
                   placeholder="New Photo URL"
                   required
-                  className="w-full px-4 py-3 rounded-md border border-gray-300 bg-gray-50 text-black"
+                  className="w-full px-4 py-3 rounded-md border border-none bg-gray-400 text-black"
                 />
 
                 <button
@@ -159,6 +162,43 @@ const Profile = () => {
             </div>
           </div>
         )}
+
+        <div className="mt-10">
+          <ul className="flex justify-center items-center gap-20 md:gap-48">
+            <li>
+              <NavLink
+                to="/app/profile/myPosts"
+                className={({ isActive }) =>
+                  `flex items-center gap-2 px-3 py-2 rounded text-lg ${
+                    isActive
+                      ? "text-blue-600 font-semibold"
+                      : "hover:text-blue-500"
+                  }`
+                }
+              >
+                <TiThSmallOutline size={30} />
+              </NavLink>
+            </li>
+            <li>
+              <NavLink
+                to="/app/profile/saved"
+                className={({ isActive }) =>
+                  `flex items-center gap-2 px-3 py-2 rounded text-lg ${
+                    isActive
+                      ? "text-blue-600 font-semibold"
+                      : "hover:text-blue-500"
+                  }`
+                }
+              >
+                <FaRegBookmark size={30} />
+              </NavLink>
+            </li>
+          </ul>
+
+          <div className="mt-6">
+            <Outlet />
+          </div>
+        </div>
       </div>
       <Navbar></Navbar>
     </div>
