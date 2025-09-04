@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import ThemeButton from "../../sharedItem/ThemeButton";
 import { ImMail2 } from "react-icons/im";
 import { BsWhatsapp } from "react-icons/bs";
@@ -13,7 +13,27 @@ import { FaHourglassStart, FaRegHeart } from "react-icons/fa";
 import useAuth from "../../hooks/useAuth";
 import { FiBookmark } from "react-icons/fi";
 import { PiPaperPlaneTiltBold } from "react-icons/pi";
-import { MdOutlineModeComment } from "react-icons/md";
+import { MdOutlineComment } from "react-icons/md";
+import {
+  EmailShareButton,
+  WhatsappShareButton,
+  FacebookShareButton,
+  LinkedinShareButton,
+  PinterestShareButton,
+  RedditShareButton,
+  TelegramShareButton,
+  ThreadsShareButton,
+  TwitterShareButton,
+  FacebookIcon,
+  LinkedinIcon,
+  PinterestIcon,
+  RedditIcon,
+  TelegramIcon,
+  ThreadsIcon,
+  TwitterIcon,
+  EmailIcon,
+  WhatsappIcon,
+} from "react-share";
 
 const data = [
   {
@@ -40,6 +60,9 @@ const Home = () => {
   const { user } = useAuth();
   const axiosSecure = useAxiosSecure();
   const formatDate = (dateString) => dayjs(dateString).format("DD/MM/YYYY");
+  const [isOpen, setIsOpen] = useState(false);
+
+  const shareUrl = window.location.href;
 
   const {
     data: posts = [],
@@ -103,11 +126,22 @@ const Home = () => {
 
                   <div className="flex items-center mt-4 justify-between mx-2">
                     <div className="flex gap-4 md:gap-6 items-center">
-                      <button className="cursor-pointer"><FaRegHeart size={27}/></button>
-                      <button className="cursor-pointer"><MdOutlineModeComment size={27}/></button>
-                      <button className="cursor-pointer"><PiPaperPlaneTiltBold size={27}/></button>
+                      <button className="cursor-pointer">
+                        <FaRegHeart size={27} />
+                      </button>
+                      <button className="cursor-pointer">
+                        <MdOutlineComment size={27} />
+                      </button>
+                      <button
+                        onClick={() => setIsOpen(true)}
+                        className="cursor-pointer"
+                      >
+                        <PiPaperPlaneTiltBold size={27}></PiPaperPlaneTiltBold>
+                      </button>
                     </div>
-                    <button className="cursor-pointer"><FiBookmark size={27}/></button>
+                    <button className="cursor-pointer">
+                      <FiBookmark size={27} />
+                    </button>
                   </div>
                 </div>
               ))}
@@ -115,6 +149,7 @@ const Home = () => {
           </div>
         </section>
 
+        {/* Sidebar */}
         <aside className="hidden xl:block col-span-3 sticky top-8 h-fit">
           <div className="mb-2">
             <ThemeButton></ThemeButton>
@@ -157,6 +192,57 @@ const Home = () => {
         </aside>
       </div>
       <Navbar></Navbar>
+
+      {/* Share Modal */}
+      {isOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
+          {/* Modal Content */}
+          <div className="rounded-lg shadow-2xl w-full max-w-lg mx-4 p-6 relative bg-gray-800">
+            {/* Close Button */}
+            <button
+              onClick={() => setIsOpen(false)}
+              className="absolute top-4 right-4 text-gray-300 hover:text-gray-400 text-2xl cursor-pointer"
+            >
+              ✕
+            </button>
+
+            <h2 className="text-xl font-semibold text-white mb-6 text-center">
+              Share this Post
+            </h2>
+
+            {/* Share Buttons */}
+            <div className="flex flex-wrap gap-4 justify-center">
+              <FacebookShareButton url={shareUrl}>
+                <FacebookIcon size={48} round />
+              </FacebookShareButton>
+              <TwitterShareButton url={shareUrl}>
+                <TwitterIcon size={48} round />
+              </TwitterShareButton>
+              <LinkedinShareButton url={shareUrl}>
+                <LinkedinIcon size={48} round />
+              </LinkedinShareButton>
+              <RedditShareButton url={shareUrl}>
+                <RedditIcon size={48} round />
+              </RedditShareButton>
+              <TelegramShareButton url={shareUrl}>
+                <TelegramIcon size={48} round />
+              </TelegramShareButton>
+              <PinterestShareButton url={shareUrl}>
+                <PinterestIcon size={48} round />
+              </PinterestShareButton>
+              <ThreadsShareButton url={shareUrl}>
+                <ThreadsIcon size={48} round />
+              </ThreadsShareButton>
+              <EmailShareButton url={shareUrl}>
+                <EmailIcon size={48} round />
+              </EmailShareButton>
+              <WhatsappShareButton url={shareUrl}>
+                <WhatsappIcon size={48} round />
+              </WhatsappShareButton>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
