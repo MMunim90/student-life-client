@@ -125,13 +125,13 @@ const Home = () => {
                   )}
 
                   <div className="flex items-center mt-4 justify-between mx-2">
-                    <div className="flex gap-4 md:gap-6 items-center">
+                    <div className="flex gap-4 items-center">
                       <button className="cursor-pointer">
                         <FaRegHeart size={27} />
                       </button>
-                      <button className="cursor-pointer">
+                      {/* <button className="cursor-pointer">
                         <MdOutlineComment size={27} />
-                      </button>
+                      </button> */}
                       <button
                         onClick={() => setIsOpen(true)}
                         className="cursor-pointer"

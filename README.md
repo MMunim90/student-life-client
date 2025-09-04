@@ -73,10 +73,10 @@ This **all-in-one approach** makes BrainBox more than just a planner—it become
 ## 📸 Screenshots 
 
 ### Home Page
-![Home Page](https://i.ibb.co.com/hRYfKP5m/Screenshot-2025-09-04-123758.png)
+![Home Page](https://i.ibb.co.com/vxtYCWSZ/Screenshot-2025-09-04-123758.png)
 
 ### Login Page
-![login](https://i.ibb.co.com/q3sLCskH/Screenshot-2025-09-04-124537.png)
+![login](https://i.ibb.co.com/tTtDPhMX/Screenshot-2025-09-04-124537.png)
 
 ### Profile Page
 ![Budget Tracker](https://i.ibb.co.com/qYMMNQjn/Screenshot-2025-09-04-124455.png)
@@ -110,7 +110,7 @@ npm run dev
 * Run the backend with:
 
 ```bash
-npm start
+nodemon index.js
 ```
 
 ---
