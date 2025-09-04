@@ -4,10 +4,9 @@ import { useForm } from "react-hook-form";
 import { useState } from "react";
 import axios from "axios";
 import Swal from "sweetalert2";
-import { Link } from "react-router";
-import useAxiosSecure from "../hooks/useAxiosSecure";
-import useAuth from "../hooks/useAuth";
 import { IoCreateOutline } from "react-icons/io5";
+import useAuth from "../hooks/useAuth";
+import useAxiosSecure from "../hooks/useAxiosSecure";
 
 const UploadForm = () => {
   const { user } = useAuth();
@@ -27,8 +26,9 @@ const UploadForm = () => {
       const res = await axios.post(imageUploadUrl, formData);
       const imageUrl = res.data?.data?.url;
 
-      const propertyInfo = {
+      const postInfo = {
         image: imageUrl,
+        category: data.category, 
         userName: user.displayName,
         userEmail: user.email,
         userImage: user.photoURL,
@@ -37,13 +37,13 @@ const UploadForm = () => {
       };
 
       // Save property info to DB
-      return await axiosSecure.post("/addProperties", propertyInfo);
+      return await axiosSecure.post("/addPosts", postInfo);
     },
     onSuccess: () => {
       Swal.fire({
         icon: "success",
         title: "Success",
-        text: "Property added successfully!",
+        text: "Post added successfully!",
         confirmButtonColor: "#01AFF7",
       });
       reset();
@@ -53,7 +53,7 @@ const UploadForm = () => {
       Swal.fire({
         icon: "error",
         title: "Oops...",
-        text: "Failed to add property",
+        text: "Failed to add post",
         confirmButtonColor: "#d33",
       });
     },
@@ -69,13 +69,13 @@ const UploadForm = () => {
       setImagePreview(URL.createObjectURL(file));
     }
   };
+
   return (
     <div className="flex flex-col justify-center">
       <form
         onSubmit={handleSubmit(onSubmit)}
         className="w-full mx-auto space-y-6 p-6 max-w-7xl"
       >
-
         {/* Image Upload */}
         <div className="col-span-1">
           <input
@@ -94,7 +94,21 @@ const UploadForm = () => {
           )}
         </div>
 
-        {/* description */}
+        {/* Select Category */}
+        <div>
+          <select
+            {...register("category", { required: true })}
+            className="w-full p-3 rounded-md border border-gray-600 focus:outline-none focus:border-gray-300 opacity-65 text-gray-400 font-semibold"
+          >
+            <option value="">Select Category</option>
+            <option value="blog">Blog</option>
+            <option value="education">Education</option>
+            <option value="error">Error</option>
+            <option value="job">Job</option>
+          </select>
+        </div>
+
+        {/* Description */}
         <div>
           <textarea
             name="message"
@@ -109,7 +123,7 @@ const UploadForm = () => {
         <div className="mt-4">
           <button
             type="submit"
-            className="cursor-pointer rounded-md bg-[#2A4759] hover:bg-[#253b49] border-none px-6 py-3 text-white flex items-center justify-center"
+            className="cursor-pointer rounded-md bg-[#2A4759] hover:bg-[#253b49] border-none px-6 py-3 text-white flex items-center justify-center gap-1"
           >
             <IoCreateOutline size={20} />
             Create

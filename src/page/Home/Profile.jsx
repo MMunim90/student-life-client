@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import Swal from "sweetalert2";
 import dayjs from "dayjs";
-import useAxios from "../../hooks/useAxios";
+// import useAxios from "../../hooks/useAxios";
 import { CiMail } from "react-icons/ci";
 import ThemeButton from "../../sharedItem/ThemeButton";
 import useAuth from "../../hooks/useAuth";
@@ -17,7 +17,7 @@ const Profile = () => {
   // console.log(user)
   const [isOpen, setIsOpen] = useState(false);
 
-  const axiosInstance = useAxios();
+  // const axiosInstance = useAxios();
   const formatDate = (dateString) => dayjs(dateString).format("DD/MM/YYYY");
 
   const handleUpdateUser = (e) => {
@@ -124,7 +124,7 @@ const Profile = () => {
               {/* Close Button */}
               <button
                 onClick={() => setIsOpen(false)}
-                className="absolute top-6 right-3 text-gray-300 hover:text-gray-400 text-2xl"
+                className="absolute top-6 right-3 text-gray-300 hover:text-gray-400 text-2xl cursor-pointer"
               >
                 <IoCloseSharp />
               </button>
@@ -163,7 +163,7 @@ const Profile = () => {
           </div>
         )}
 
-        <div className="mt-10">
+        <div className="mt-6">
           <ul className="flex justify-center items-center gap-20 md:gap-48">
             <li>
               <NavLink

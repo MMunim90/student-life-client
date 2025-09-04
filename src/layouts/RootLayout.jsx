@@ -1,7 +1,6 @@
 import React, { useContext, useState } from "react";
 import { Link, NavLink, Outlet } from "react-router";
 import { FaPlus, FaUsers } from "react-icons/fa";
-// import useAxios from "../hooks/useAxios";
 import Logo from "../sharedItem/logo";
 import { LogOut } from "lucide-react";
 import Swal from "sweetalert2";
@@ -17,7 +16,6 @@ const RootLayout = () => {
   // console.log(user)
   const [isOpen, setIsOpen] = useState(false);
   const [error, setError] = useState(null);
-  // const axiosInstance = useAxios();
 
   const handleLogOut = () => {
     logOut()
@@ -240,7 +238,7 @@ const RootLayout = () => {
               <h2 className="text-xl font-semibold">Create New Post</h2>
               <button
                 onClick={() => setIsOpen(false)}
-                className="text-gray-300 hover:text-gray-400 text-2xl font-bold"
+                className="text-gray-300 hover:text-gray-400 text-2xl font-bold cursor-pointer"
               >
                 ✕
               </button>

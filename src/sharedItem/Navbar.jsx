@@ -104,7 +104,7 @@ const Navbar = () => {
               <h2 className="text-xl font-semibold">Create New Post</h2>
               <button
                 onClick={() => setIsOpen(false)}
-                className="text-gray-600 hover:text-red-500 text-2xl font-bold"
+                className="text-gray-300 hover:text-gray-400 cursor-pointer text-2xl font-bold"
               >
                 ✕
               </button>
