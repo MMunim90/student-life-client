@@ -72,7 +72,7 @@ This **all-in-one approach** makes BrainBox more than just a planner—it become
 
 ## 📸 Screenshots 
 
-<img align="right"  alt="Coding" width="500" src="https://i.ibb.co.com/yF6z0qP2/Screenshot-2025-09-04-123758.png">
+![MasterHead](https://i.ibb.co.com/yF6z0qP2/Screenshot-2025-09-04-123758.png)
 
 ---
 
