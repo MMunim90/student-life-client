@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import ThemeButton from "../../sharedItem/ThemeButton";
 import { ImMail2 } from "react-icons/im";
 import { BsWhatsapp } from "react-icons/bs";
@@ -11,7 +11,6 @@ import Loading from "../../sharedItem/Loading";
 import dayjs from "dayjs";
 import { FaHourglassStart, FaRegHeart } from "react-icons/fa";
 import useAuth from "../../hooks/useAuth";
-import { FiBookmark } from "react-icons/fi";
 import { PiPaperPlaneTiltBold } from "react-icons/pi";
 import { MdOutlineComment } from "react-icons/md";
 import {
@@ -34,6 +33,8 @@ import {
   EmailIcon,
   WhatsappIcon,
 } from "react-share";
+import { IoBookmark, IoBookmarkOutline } from "react-icons/io5";
+import Swal from "sweetalert2";
 
 const data = [
   {
@@ -61,6 +62,7 @@ const Home = () => {
   const axiosSecure = useAxiosSecure();
   const formatDate = (dateString) => dayjs(dateString).format("DD/MM/YYYY");
   const [isOpen, setIsOpen] = useState(false);
+  const [hasSaved, setHasSaved] = useState({});
 
   const shareUrl = window.location.href;
 
@@ -75,6 +77,57 @@ const Home = () => {
       return res.data;
     },
   });
+
+  const handleSave = async (post) => {
+    try {
+      await axiosSecure.post("/savedPosts", {
+        postId: post._id,
+        posterEmail: post.userEmail,
+        userEmail: user.email,
+        posterName: post.userName,
+        posterImage: post.userImage,
+        message: post.message,
+        image: post.image,
+        category: post.category,
+      });
+
+      Swal.fire({
+        title: "Saved successfully!",
+        icon: "success",
+      });
+
+      setHasSaved((prev) => ({
+        ...prev,
+        [post._id]: true,
+      }));
+    } catch (err) {
+      console.error("Failed to save post", err);
+      Swal.fire({
+        title: "Failed to save",
+        text: "Something went wrong. Please try again.",
+        icon: "error",
+      });
+    }
+  };
+
+  useEffect(() => {
+    const fetchSavedPosts = async () => {
+      try {
+        if (user?.email) {
+          const res = await axiosSecure.get(`/savedPosts/${user.email}`);
+          const savedMap = {};
+          res.data.forEach((saved) => {
+            savedMap[saved.postId] = true;
+          });
+          setHasSaved(savedMap);
+        }
+      } catch (err) {
+        console.error("Error fetching saved posts", err);
+      }
+    };
+
+    fetchSavedPosts();
+  }, [user?.email, axiosSecure]);
 
   return (
     <div>
@@ -139,9 +192,23 @@ const Home = () => {
                         <PiPaperPlaneTiltBold size={27}></PiPaperPlaneTiltBold>
                       </button>
                     </div>
-                    <button className="cursor-pointer">
-                      <FiBookmark size={27} />
-                    </button>
+                    {post.userEmail !== user.email && (
+                      <button
+                        onClick={() => handleSave(post)}
+                        disabled={hasSaved[post._id]}
+                        className={`${
+                          hasSaved[post._id]
+                            ? "cursor-not-allowed"
+                            : "cursor-pointer"
+                        }`}
+                      >
+                        {hasSaved[post._id] ? (
+                          <IoBookmark size={27} />
+                        ) : (
+                          <IoBookmarkOutline size={27} />
+                        )}
+                      </button>
+                    )}
                   </div>
                 </div>
               ))}
