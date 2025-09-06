@@ -5,13 +5,13 @@ import { BsWhatsapp } from "react-icons/bs";
 import { Link } from "react-router";
 import { RxExternalLink } from "react-icons/rx";
 import Navbar from "../../sharedItem/Navbar";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import useAxiosSecure from "../../hooks/useAxiosSecure";
 import Loading from "../../sharedItem/Loading";
 import dayjs from "dayjs";
-import { FaHourglassStart, FaRegHeart } from "react-icons/fa";
+import { FaHourglassStart } from "react-icons/fa";
 import useAuth from "../../hooks/useAuth";
-import { PiPaperPlaneTiltBold } from "react-icons/pi";
+import { PiPaperPlaneTilt } from "react-icons/pi";
 import { MdOutlineComment } from "react-icons/md";
 import {
   EmailShareButton,
@@ -35,6 +35,7 @@ import {
 } from "react-share";
 import { IoBookmark, IoBookmarkOutline } from "react-icons/io5";
 import Swal from "sweetalert2";
+import { GoHeart, GoHeartFill } from "react-icons/go";
 
 const data = [
   {
@@ -63,6 +64,7 @@ const Home = () => {
   const formatDate = (dateString) => dayjs(dateString).format("DD/MM/YYYY");
   const [isOpen, setIsOpen] = useState(false);
   const [hasSaved, setHasSaved] = useState({});
+  const queryClient = useQueryClient();
 
   const shareUrl = window.location.href;
 
@@ -129,6 +131,38 @@ const Home = () => {
     fetchSavedPosts();
   }, [user?.email, axiosSecure]);
 
+  const handleLike = async (postId) => {
+    try {
+      const { data: updatedPost } = await axiosSecure.post(
+        `/posts/${postId}/like`,
+        { userEmail: user.email }
+      );
+
+      queryClient.setQueryData(["posts"], (oldPosts = []) =>
+        oldPosts.map((post) => (post._id === postId ? updatedPost : post))
+      );
+    } catch (error) {
+      console.error("Failed to like post", error);
+      Swal.fire("Error", "Failed to like post", "error");
+    }
+  };
+
+  const handleUnlike = async (postId) => {
+    try {
+      const { data: updatedPost } = await axiosSecure.post(
+        `/posts/${postId}/unlike`,
+        { userEmail: user.email }
+      );
+
+      queryClient.setQueryData(["posts"], (oldPosts = []) =>
+        oldPosts.map((post) => (post._id === postId ? updatedPost : post))
+      );
+    } catch (error) {
+      console.error("Failed to unlike post", error);
+      Swal.fire("Error", "Failed to unlike post", "error");
+    }
+  };
+
   return (
     <div>
       <div className="lg:hidden">
@@ -149,7 +183,7 @@ const Home = () => {
               {posts.map((post) => (
                 <div
                   key={post._id}
-                  className="p-4 pb-8 border-b border-gray-400"
+                  className="p-4 border-b border-gray-400"
                 >
                   <div className="flex items-center gap-3 mb-2">
                     <img
@@ -177,11 +211,23 @@ const Home = () => {
                     />
                   )}
 
-                  <div className="flex items-center mt-4 justify-between mx-2">
+                  <div className="flex items-center mt-4 justify-between mx-2 mb-4">
                     <div className="flex gap-4 items-center">
-                      <button className="cursor-pointer">
-                        <FaRegHeart size={27} />
+                      <button
+                        className="cursor-pointer"
+                        onClick={() =>
+                          (post.likes || []).includes(user.email)
+                            ? handleUnlike(post._id)
+                            : handleLike(post._id)
+                        }
+                      >
+                        {(post.likes || []).includes(user.email) ? (
+                          <GoHeartFill size={27} />
+                        ) : (
+                          <GoHeart size={27} />
+                        )}
                       </button>
+
                       {/* <button className="cursor-pointer">
                         <MdOutlineComment size={27} />
                       </button> */}
@@ -189,7 +235,7 @@ const Home = () => {
                         onClick={() => setIsOpen(true)}
                         className="cursor-pointer"
                       >
-                        <PiPaperPlaneTiltBold size={27}></PiPaperPlaneTiltBold>
+                        <PiPaperPlaneTilt size={27} />
                       </button>
                     </div>
                     {post.userEmail !== user.email && (
@@ -210,6 +256,7 @@ const Home = () => {
                       </button>
                     )}
                   </div>
+                  <span className="mx-3">{(post.likes || []).length} {" "} Likes</span>
                 </div>
               ))}
             </div>
