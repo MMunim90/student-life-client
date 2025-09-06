@@ -20,7 +20,7 @@ const SocialLogin = () => {
         Swal.fire({
           title: `${user.displayName} Login Successful!`,
           icon: "success",
-          confirmButtonColor: "#CAEB66",
+          confirmButtonColor: "#3947bf",
         });
 
         //update userinfo in the database

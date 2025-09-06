@@ -66,13 +66,13 @@ const Saved = () => {
           {savedPosts.map((post) => (
             <div
               key={post._id}
-              className="border border-gray-300 p-4 rounded-md shadow-lg relative"
+              className="border border-gray-300 p-4 rounded-md shadow-lg"
             >
               <button
                 onClick={() => handleDelete(post._id)}
-                className="absolute top-2 right-2 text-red-500 font-bold hover:text-red-700"
+                className="w-full cursor-pointer mb-3 text-end"
               >
-                Delete
+                Remove
               </button>
 
               {post.image && (
