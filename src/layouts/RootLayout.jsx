@@ -86,17 +86,7 @@ const RootLayout = () => {
             <div className="mt-4">
               <Logo></Logo>
             </div>
-            {/* <div className="text-center">
-              <img
-                src={user?.photoURL || "https://i.ibb.co.com/990my6Yq/avater.png"}
-                alt="profile"
-                className="w-28 h-28 object-cover rounded-full mx-auto border-4 border-blue-400 mb-4"
-              />
-              <h2 className="font-semibold my-2">{user.displayName}</h2>
-              <p className="text-sm text-gray-500 mb-2">{user.email}</p>
-            </div>
-            <div className="border border-blue-400 text-black mb-4"></div> */}
-
+            
             {/* user link */}
             {user && (
               <>

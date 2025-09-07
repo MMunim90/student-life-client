@@ -103,7 +103,7 @@ const UploadForm = () => {
             <option value="">Select Category</option>
             <option value="blog">Blog</option>
             <option value="education">Education</option>
-            <option value="error">Error</option>
+            <option value="achievement">Achievement</option>
             <option value="job">Job</option>
           </select>
         </div>

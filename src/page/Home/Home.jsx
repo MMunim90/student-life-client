@@ -65,6 +65,7 @@ const Home = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [hasSaved, setHasSaved] = useState({});
   const queryClient = useQueryClient();
+  const [imgOpen, setImgOpen] = useState(null);
 
   const shareUrl = window.location.href;
 
@@ -181,10 +182,7 @@ const Home = () => {
 
             <div className="space-y-4 mb-28 md:mb-8 mt-4 md:w-1/2 md:mx-auto">
               {posts.map((post) => (
-                <div
-                  key={post._id}
-                  className="p-4 border-b border-gray-400"
-                >
+                <div key={post._id} className="p-4 border-b border-gray-400">
                   <div className="flex items-center gap-3 mb-2">
                     <img
                       src={post.userImage}
@@ -202,13 +200,39 @@ const Home = () => {
                       </p>
                     </div>
                   </div>
-                  <p className="mb-2">{post.message}</p>
+                  <p className="mb-3">{post.message}</p>
                   {post.image && (
                     <img
+                      onClick={() => setImgOpen(post.image)}
                       src={post.image}
                       alt="Post"
-                      className="rounded-md w-full max-h-120 object-cover"
+                      className="rounded-md w-full max-h-120 object-cover cursor-pointer"
                     />
+                  )}
+
+                  {/* open img modal */}
+                  {imgOpen && (
+                    <div className="fixed inset-0 flex items-center justify-center bg-black/20 z-50">
+                      <div className="w-11/12 max-w-2xl p-6 overflow-y-auto max-h-[90vh]">
+                        {/* Header */}
+                        
+                        <button
+                          onClick={() => setImgOpen(null)}
+                          className="text-gray-400 hover:text-gray-500 text-2xl font-bold cursor-pointer absolute top-6 right-6"
+                        >
+                          ✕
+                        </button>
+
+                        {/* Image */}
+                        <div className="flex justify-center">
+                          <img
+                            src={imgOpen}
+                            alt="Post preview"
+                            className="rounded-lg max-h-[75vh] object-contain"
+                          />
+                        </div>
+                      </div>
+                    </div>
                   )}
 
                   <div className="flex items-center mt-4 justify-between mx-2 mb-4">
@@ -222,7 +246,7 @@ const Home = () => {
                         }
                       >
                         {(post.likes || []).includes(user.email) ? (
-                          <GoHeartFill size={27} />
+                          <GoHeartFill size={27} className="text-red-500" />
                         ) : (
                           <GoHeart size={27} />
                         )}
@@ -256,7 +280,9 @@ const Home = () => {
                       </button>
                     )}
                   </div>
-                  <span className="mx-3">{(post.likes || []).length} {" "} Likes</span>
+                  <span className="mx-3">
+                    {(post.likes || []).length} Likes
+                  </span>
                 </div>
               ))}
             </div>

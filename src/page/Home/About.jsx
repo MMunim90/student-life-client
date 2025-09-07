@@ -50,7 +50,7 @@ const About = () => {
                 data-aos-offset="500"
                 data-aos-duration="2000"
                 src="https://www.eschoolnews.com/files/2023/12/collaborative-learning.jpeg"
-                alt="Students collaborating"
+                alt="Students collaborating image"
                 className="rounded-2xl shadow-md object-cover w-full h-72 animate-pulse"
               />
             </div>

@@ -34,7 +34,7 @@ const ErrorPage = () => {
 
       {/* Back to home button */}
       <Link onClick={() => navigate(-1)}
-        className="inline-block px-6 py-3 bg-gray-400 hover:bg-gray-500 font-semibold rounded-lg transition text-white"
+        className="inline-block px-6 py-3 bg-gray-800 hover:bg-gray-900 font-semibold rounded-lg transition text-white"
       >
         ⇦ Back
       </Link>
