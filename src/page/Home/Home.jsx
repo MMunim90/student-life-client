@@ -268,7 +268,7 @@ const Home = () => {
                         disabled={hasSaved[post._id]}
                         className={`${
                           hasSaved[post._id]
-                            ? "cursor-not-allowed"
+                            ? "cursor-text"
                             : "cursor-pointer"
                         }`}
                       >
