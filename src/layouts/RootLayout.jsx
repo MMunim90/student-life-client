@@ -7,7 +7,7 @@ import Swal from "sweetalert2";
 import { AuthContext } from "../context/AuthContext/AuthContext";
 import { GoHomeFill } from "react-icons/go";
 import { GrSchedules } from "react-icons/gr";
-import { GiMoneyStack } from "react-icons/gi";
+import { GiMoneyStack, GiSkills } from "react-icons/gi";
 import { PiExam, PiExamBold, PiStudent, PiStudentBold } from "react-icons/pi";
 import UploadForm from "../components/UploadForm";
 
@@ -180,6 +180,20 @@ const RootLayout = () => {
                     }
                   >
                     <PiStudentBold /> Study planner
+                  </NavLink>
+                </li>
+                <li>
+                  <NavLink
+                    to="/app/skill"
+                    className={({ isActive }) =>
+                      `flex items-center gap-2 px-3 py-2 rounded text-lg ${
+                        isActive
+                          ? "text-blue-600 font-semibold"
+                          : "hover:text-blue-500"
+                      }`
+                    }
+                  >
+                    <GiSkills /> Skill Tracker
                   </NavLink>
                 </li>
                 <li>

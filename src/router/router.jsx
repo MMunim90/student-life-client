@@ -15,6 +15,7 @@ import StudyPlanner from "../page/Home/StudyPlanner";
 import Profile from "../page/Home/Profile";
 import MyPosts from "../components/MyPosts";
 import Saved from "../components/Saved";
+import SkillProgressTracker from "../page/Home/SkillProgressTracker";
 
 export const router = createBrowserRouter([
   {
@@ -74,6 +75,10 @@ export const router = createBrowserRouter([
       {
         path: "study",
         Component: StudyPlanner,
+      },
+      {
+        path: "skill",
+        Component: SkillProgressTracker,
       },
       {
         path: "profile",
