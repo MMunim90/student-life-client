@@ -16,6 +16,47 @@ const StudyPlanner = () => {
   const [deadline, setDeadline] = useState("");
   const [filterPriority, setFilterPriority] = useState("All");
   const [sortOrder, setSortOrder] = useState("asc");
+  const [hour, setHour] = useState("");
+  const [timers, setTimers] = useState({});
+  const [runningTimers, setRunningTimers] = useState({});
+
+  // Handle Timer Start
+  const handleStartTimer = (taskId, hours) => {
+    const totalMs = hours * 60 * 60 * 1000; // convert hour → ms
+    if (!timers[taskId]) {
+      setTimers((prev) => ({ ...prev, [taskId]: totalMs }));
+    }
+    setRunningTimers((prev) => ({ ...prev, [taskId]: true }));
+  };
+
+  // Handle Pause
+  const handlePauseTimer = (taskId) => {
+    setRunningTimers((prev) => ({ ...prev, [taskId]: false }));
+  };
+
+  // Handle Reset
+  const handleResetTimer = (taskId, hours) => {
+    const totalMs = hours * 60 * 60 * 1000;
+    setTimers((prev) => ({ ...prev, [taskId]: totalMs }));
+    setRunningTimers((prev) => ({ ...prev, [taskId]: false }));
+  };
+
+  // Effect to decrease running timers
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setTimers((prevTimers) => {
+        const updated = { ...prevTimers };
+        Object.keys(runningTimers).forEach((taskId) => {
+          if (runningTimers[taskId] && updated[taskId] > 0) {
+            updated[taskId] = updated[taskId] - 1000; // decrease 1 sec
+          }
+        });
+        return updated;
+      });
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, [runningTimers]);
 
   // Fetch tasks from backend
   useEffect(() => {
@@ -45,6 +86,7 @@ const StudyPlanner = () => {
       subject,
       priority,
       deadline,
+      hour,
       isCompleted: false,
       email: user.email,
     };
@@ -106,23 +148,23 @@ const StudyPlanner = () => {
   };
 
   // Edit Task → PATCH
-  const handleEditTask = async (id, updatedFields) => {
-    try {
-      const res = await axiosSecure.patch(`/tasks/${id}`, updatedFields);
-      if (res.data.modifiedCount > 0) {
-        setTasks(
-          tasks.map((t) => (t._id === id ? { ...t, ...updatedFields } : t))
-        );
-        setCompletedTasks(
-          completedTasks.map((t) =>
-            t._id === id ? { ...t, ...updatedFields } : t
-          )
-        );
-      }
-    } catch (err) {
-      console.error(err);
-    }
-  };
+  //   const handleEditTask = async (id, updatedFields) => {
+  //     try {
+  //       const res = await axiosSecure.patch(`/tasks/${id}`, updatedFields);
+  //       if (res.data.modifiedCount > 0) {
+  //         setTasks(
+  //           tasks.map((t) => (t._id === id ? { ...t, ...updatedFields } : t))
+  //         );
+  //         setCompletedTasks(
+  //           completedTasks.map((t) =>
+  //             t._id === id ? { ...t, ...updatedFields } : t
+  //           )
+  //         );
+  //       }
+  //     } catch (err) {
+  //       console.error(err);
+  //     }
+  //   };
 
   // Priority Color
   const getPriorityColor = (level) => {
@@ -152,8 +194,8 @@ const StudyPlanner = () => {
     });
 
   return (
-    <div className="min-h-screen mb-28 md:mb-6">
-      <div className="max-w-5xl mx-auto px-6 py-8">
+    <div className="min-h-screen mb-28 md:mb-6 mt-8 lg:mt-20">
+      <div className="w-11/12 mx-auto px-6 py-8">
         {/* Header */}
 
         <div className="mb-10">
@@ -164,7 +206,7 @@ const StudyPlanner = () => {
         {/* Task Input Form */}
         <form
           onSubmit={handleAddTask}
-          className="border rounded-2xl p-6 mb-8 grid grid-cols-1 sm:grid-cols-4 gap-4"
+          className="border rounded-2xl p-6 mb-8 grid grid-cols-1 md:grid-cols-5 gap-4"
         >
           <input
             type="text"
@@ -182,6 +224,15 @@ const StudyPlanner = () => {
             <option className="text-black">Medium</option>
             <option className="text-black">Low</option>
           </select>
+
+          <input
+            type="number"
+            placeholder="Enter Hours"
+            className="border rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500"
+            value={hour}
+            onChange={(e) => setHour(e.target.value)}
+          />
+
           <input
             type="date"
             className="border rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500"
@@ -218,8 +269,12 @@ const StudyPlanner = () => {
               value={sortOrder}
               onChange={(e) => setSortOrder(e.target.value)}
             >
-              <option className="text-black" value="asc">Earliest First</option>
-              <option className="text-black" value="desc">Latest First</option>
+              <option className="text-black" value="asc">
+                Earliest First
+              </option>
+              <option className="text-black" value="desc">
+                Latest First
+              </option>
             </select>
           </div>
         </div>
@@ -234,9 +289,10 @@ const StudyPlanner = () => {
               {filteredAndSortedTasks.map((task) => (
                 <div
                   key={task._id}
-                  className="bg-white shadow-md hover:shadow-lg transition rounded-xl p-5 flex justify-between items-center"
+                  className="border transition rounded-xl p-5 flex flex-col md:flex-row md:justify-between md:items-center gap-4"
                 >
-                  <div>
+                  {/* Task Info */}
+                  <div className="flex-1">
                     <h3 className="text-lg font-medium">{task.subject}</h3>
                     <p className={getPriorityColor(task.priority)}>
                       Priority: {task.priority}
@@ -251,6 +307,41 @@ const StudyPlanner = () => {
                       Deadline: {format(new Date(task.deadline), "PPP")}
                     </p>
                   </div>
+
+                  {/* Stopwatch Section */}
+                  <div className="flex flex-col items-start md:items-center mb-4 mr-4">
+                    {timers[task._id] !== undefined ? (
+                      <p className="text-sm text-blue-600">
+                        ⏱ {Math.floor(timers[task._id] / 3600000)}h :
+                        {Math.floor((timers[task._id] % 3600000) / 60000)}m :
+                        {Math.floor((timers[task._id] % 60000) / 1000)}s
+                      </p>
+                    ) : (
+                      <p className="text-sm text-gray-500">⏱ {task.hour}h</p>
+                    )}
+                    <div className="flex flex-wrap gap-2 mt-2">
+                      <button
+                        onClick={() => handleStartTimer(task._id, task.hour)}
+                        className="px-2 py-1 bg-green-500 text-white rounded text-sm cursor-pointer"
+                      >
+                        Start
+                      </button>
+                      <button
+                        onClick={() => handlePauseTimer(task._id)}
+                        className="px-2 py-1 bg-yellow-500 text-white rounded text-sm cursor-pointer"
+                      >
+                        Pause
+                      </button>
+                      <button
+                        onClick={() => handleResetTimer(task._id, task.hour)}
+                        className="px-2 py-1 bg-red-500 text-white rounded text-sm cursor-pointer"
+                      >
+                        Reset
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* Actions (checkbox + delete) */}
                   <div className="flex items-center gap-3">
                     <input
                       type="checkbox"
@@ -260,7 +351,7 @@ const StudyPlanner = () => {
                     />
                     <button
                       onClick={() => handleDelete(task._id, "active")}
-                      className="text-red-500 hover:underline"
+                      className="text-red-500 cursor-pointer"
                     >
                       Delete
                     </button>
@@ -281,7 +372,7 @@ const StudyPlanner = () => {
               {completedTasks.map((task) => (
                 <div
                   key={task._id}
-                  className="bg-green-50 border border-green-200 rounded-xl p-5 flex justify-between items-center"
+                  className="bg-green-200 border border-green-200 rounded-xl p-5 flex justify-between items-center"
                 >
                   <div>
                     <h3 className="text-lg font-medium line-through text-gray-600">
@@ -291,7 +382,7 @@ const StudyPlanner = () => {
                   </div>
                   <button
                     onClick={() => handleDelete(task._id, "completed")}
-                    className="text-red-500 hover:underline"
+                    className="text-red-500 cursor-pointer"
                   >
                     Delete
                   </button>

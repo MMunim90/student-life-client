@@ -75,7 +75,7 @@ This **all-in-one approach** makes BrainBox more than just a planner—it become
 ### Home Page (unique feature)
 ![Home Page](https://i.ibb.co.com/vxtYCWSZ/Screenshot-2025-09-04-123758.png)
 
-In the Home section, students or users can see posts from others. Posts are divided into categories: **Blog, Education, Achievement, and Job**.
+I consider home page as a unique feature because, In the Home page, students or users can see posts from others. Posts are divided into categories: **Blog, Education, Achievement, and Job**.
 
 * **Education**: All academic and skill-related posts belong here.
 
