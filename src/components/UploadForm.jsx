@@ -98,7 +98,7 @@ const UploadForm = () => {
         <div>
           <select
             {...register("category", { required: true })}
-            className="w-full p-3 rounded-md border border-gray-600 focus:outline-none focus:border-gray-300 opacity-65 text-gray-400 font-semibold"
+            className="w-full p-3 rounded-md border border-gray-600 focus:outline-none focus:border-gray-300 opacity-65 text-gray-500 font-semibold"
           >
             <option value="">Select Category</option>
             <option value="blog">Blog</option>

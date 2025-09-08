@@ -72,8 +72,18 @@ This **all-in-one approach** makes BrainBox more than just a planner—it become
 
 ## 📸 Screenshots 
 
-### Home Page
+### Home Page (unique feature)
 ![Home Page](https://i.ibb.co.com/vxtYCWSZ/Screenshot-2025-09-04-123758.png)
+
+In the Home section, students or users can see posts from others. Posts are divided into categories: **Blog, Education, Achievement, and Job**.
+
+* **Education**: All academic and skill-related posts belong here.
+
+* **Achievement**: Students can share their personal or academic achievements.
+
+* **Job**: Recruiters can create detailed job posts, which helps students who want to earn money to cover their expenses. Students can also create job posts with their full bio to seek opportunities.
+
+* **Blog**: For all other student life–related posts.
 
 ### Login Page
 ![login](https://i.ibb.co.com/tTtDPhMX/Screenshot-2025-09-04-124537.png)

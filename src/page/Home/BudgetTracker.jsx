@@ -93,7 +93,7 @@ const BudgetTracker = () => {
   return (
     <div className="min-h-screen mb-20 md:mb-6">
       <div className="max-w-5xl mx-auto px-4 py-8">
-        <h2 className="text-3xl font-semibold mb-6">Budget Tracker</h2>
+        <h2 className="text-3xl font-semibold mb-6">💰 Budget Tracker</h2>
 
         {/* Summary Section */}
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
