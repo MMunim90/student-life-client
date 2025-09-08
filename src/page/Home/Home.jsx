@@ -185,9 +185,10 @@ const Home = () => {
                 <div key={post._id} className="p-4 border-b border-gray-400">
                   <div className="flex items-center gap-3 mb-2">
                     <img
+                      onClick={() => setImgOpen(post.userImage)}
                       src={post.userImage}
                       alt={post.userName}
-                      className="w-10 h-10 rounded-full object-cover"
+                      className="w-10 h-10 rounded-full object-cover cursor-pointer"
                     />
                     <div>
                       <div className="flex gap-3">
@@ -215,7 +216,7 @@ const Home = () => {
                     <div className="fixed inset-0 flex items-center justify-center bg-black/20 z-50">
                       <div className="w-11/12 max-w-2xl p-6 overflow-y-auto max-h-[90vh]">
                         {/* Header */}
-                        
+
                         <button
                           onClick={() => setImgOpen(null)}
                           className="text-gray-400 hover:text-gray-500 text-2xl font-bold cursor-pointer absolute top-6 right-6"
@@ -267,9 +268,7 @@ const Home = () => {
                         onClick={() => handleSave(post)}
                         disabled={hasSaved[post._id]}
                         className={`${
-                          hasSaved[post._id]
-                            ? "cursor-text"
-                            : "cursor-pointer"
+                          hasSaved[post._id] ? "cursor-text" : "cursor-pointer"
                         }`}
                       >
                         {hasSaved[post._id] ? (
