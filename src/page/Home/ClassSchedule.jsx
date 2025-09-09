@@ -152,6 +152,9 @@ const ClassSchedule = () => {
     documentTitle: "Class Schedule",
   });
 
+  const today = days[new Date().getDay()];
+  const todayClasses = schedules.filter((cls) => cls.day === today);
+
   return (
     <div className="py-24 w-11/12 mx-auto mb-8">
       {/* Header */}
@@ -237,46 +240,78 @@ const ClassSchedule = () => {
         </button>
       </form>
 
-      {/* Weekly Calendar */}
-      <div
-        ref={componentRef}
-        className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4"
-      >
-        {days.map((day) => (
-          <div key={day} className="border rounded-lg p-3 min-h-[200px]">
-            <h3 className="font-semibold text-lg mb-2 text-center">{day}</h3>
-            {schedules
-              .filter((cls) => cls.day === day)
-              .map((cls) => (
-                <div
-                  key={cls._id}
-                  className="rounded-lg p-3 mb-2 shadow text-white"
-                  style={{ backgroundColor: cls.colorCode }}
-                >
+      {/* Today's Class Section */}
+      <div className="mb-10">
+        <h3 className="text-xl font-bold mb-4">📌 Today's Classes Schedule for {today}</h3>
+        {todayClasses.length === 0 ? (
+          <p className="text-gray-500">No Class For Today</p>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-5">
+            {todayClasses.map((cls) => (
+              <div
+                key={cls._id}
+                className="rounded-lg p-4 shadow text-white h-40 flex flex-col justify-between"
+                style={{ backgroundColor: cls.colorCode }}
+              >
+                <div>
                   <h4 className="font-bold">
                     {cls.subject} ({cls.subjectCode})
                   </h4>
                   <p className="text-sm">{cls.time}</p>
                   <p className="text-sm">Room: {cls.roomNumber}</p>
-                  <p className="text-sm italic">Instructor: {cls.instructor}</p>
-                  <div className="flex justify-between mt-2 text-xs">
-                    <button
-                      onClick={() => handleUpdateClick(cls)}
-                      className="bg-yellow-500 px-2 py-1 rounded cursor-pointer"
-                    >
-                      Edit
-                    </button>
-                    <button
-                      onClick={() => handleDelete(cls)}
-                      className="bg-red-600 px-2 py-1 rounded cursor-pointer"
-                    >
-                      Delete
-                    </button>
-                  </div>
                 </div>
-              ))}
+                <p className="text-sm italic">Instructor: {cls.instructor}</p>
+              </div>
+            ))}
           </div>
-        ))}
+        )}
+      </div>
+
+      {/* Weekly Calendar */}
+      <div>
+        <h3 className="text-xl font-bold mb-4">📆 Weekly Calendar</h3>
+        <div
+          ref={componentRef}
+          className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4"
+        >
+          {days.map((day) => (
+            <div key={day} className="border rounded-lg p-3 min-h-[200px]">
+              <h3 className="font-semibold text-lg mb-2 text-center">{day}</h3>
+              {schedules
+                .filter((cls) => cls.day === day)
+                .map((cls) => (
+                  <div
+                    key={cls._id}
+                    className="rounded-lg p-3 mb-2 shadow text-white"
+                    style={{ backgroundColor: cls.colorCode }}
+                  >
+                    <h4 className="font-bold">
+                      {cls.subject} ({cls.subjectCode})
+                    </h4>
+                    <p className="text-sm">{cls.time}</p>
+                    <p className="text-sm">Room: {cls.roomNumber}</p>
+                    <p className="text-sm italic">
+                      Instructor: {cls.instructor}
+                    </p>
+                    <div className="flex justify-between mt-2 text-xs">
+                      <button
+                        onClick={() => handleUpdateClick(cls)}
+                        className="bg-yellow-500 px-2 py-1 rounded cursor-pointer"
+                      >
+                        Edit
+                      </button>
+                      <button
+                        onClick={() => handleDelete(cls)}
+                        className="bg-red-600 px-2 py-1 rounded cursor-pointer"
+                      >
+                        Delete
+                      </button>
+                    </div>
+                  </div>
+                ))}
+            </div>
+          ))}
+        </div>
       </div>
 
       {/* Update Modal */}

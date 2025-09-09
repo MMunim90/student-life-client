@@ -14,6 +14,7 @@ import {
   XAxis,
   YAxis,
   CartesianGrid,
+  Legend,
 } from "recharts";
 
 const BudgetTracker = () => {
@@ -97,7 +98,7 @@ const BudgetTracker = () => {
 
         {/* Summary Section */}
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
-          <div className="bg-green-200 p-4 rounded-2xl text-center">
+          <div className="bg-green-200 p-4 rounded-2xl text-center relative">
             <p className="text-gray-500">Total Income</p>
             <p className="text-xl font-bold text-green-700">৳ {totalIncome}</p>
           </div>
@@ -138,12 +139,12 @@ const BudgetTracker = () => {
             <h3 className="text-lg font-semibold mb-4 text-center">
               Expense Breakdown
             </h3>
-            <ResponsiveContainer width="100%" height={300}>
+            <ResponsiveContainer width="100%" height={350}>
               <PieChart>
                 <Pie
                   data={expenseData}
                   cx="50%"
-                  cy="50%"
+                  cy="45%"
                   outerRadius={100}
                   dataKey="value"
                   label
@@ -156,6 +157,11 @@ const BudgetTracker = () => {
                   ))}
                 </Pie>
                 <Tooltip />
+                <Legend
+                  layout="horizontal"
+                  verticalAlign="bottom"
+                  align="center"
+                />
               </PieChart>
             </ResponsiveContainer>
           </div>

@@ -4,6 +4,8 @@ import Navbar from "../../sharedItem/Navbar";
 import { format, isBefore, addDays, compareAsc, compareDesc } from "date-fns";
 import useAxiosSecure from "../../hooks/useAxiosSecure";
 import useAuth from "../../hooks/useAuth";
+import Lottie from "lottie-react";
+import celebrateAnimation from "../../assets/lottie/Celebration.json";
 
 const StudyPlanner = () => {
   const axiosSecure = useAxiosSecure();
@@ -19,6 +21,12 @@ const StudyPlanner = () => {
   const [hour, setHour] = useState("");
   const [timers, setTimers] = useState({});
   const [runningTimers, setRunningTimers] = useState({});
+  const [celebrate, setCelebrate] = useState(false);
+  const [editingTask, setEditingTask] = useState(null);
+  const [editSubject, setEditSubject] = useState("");
+  const [editPriority, setEditPriority] = useState("Medium");
+  const [editDeadline, setEditDeadline] = useState("");
+  const [editHour, setEditHour] = useState("");
 
   // Handle Timer Start
   const handleStartTimer = (taskId, hours) => {
@@ -114,6 +122,10 @@ const StudyPlanner = () => {
 
       if (res.data.modifiedCount > 0) {
         if (!task.isCompleted) {
+          // Show celebration animation
+          setCelebrate(true);
+          setTimeout(() => setCelebrate(false), 3000);
+
           // Move to completed
           setTasks(tasks.filter((t) => t._id !== task._id));
           setCompletedTasks([
@@ -147,24 +159,34 @@ const StudyPlanner = () => {
     }
   };
 
-  // Edit Task → PATCH
-  //   const handleEditTask = async (id, updatedFields) => {
-  //     try {
-  //       const res = await axiosSecure.patch(`/tasks/${id}`, updatedFields);
-  //       if (res.data.modifiedCount > 0) {
-  //         setTasks(
-  //           tasks.map((t) => (t._id === id ? { ...t, ...updatedFields } : t))
-  //         );
-  //         setCompletedTasks(
-  //           completedTasks.map((t) =>
-  //             t._id === id ? { ...t, ...updatedFields } : t
-  //           )
-  //         );
-  //       }
-  //     } catch (err) {
-  //       console.error(err);
-  //     }
-  //   };
+  const handleUpdateTask = async () => {
+    if (!editingTask) return;
+
+    const updatedTask = {
+      subject: editSubject,
+      priority: editPriority,
+      deadline: editDeadline,
+      hour: editHour,
+    };
+
+    try {
+      const res = await axiosSecure.patch(
+        `/tasks/${editingTask._id}`,
+        updatedTask
+      );
+      if (res.data.modifiedCount > 0) {
+        // Update active tasks state
+        setTasks(
+          tasks.map((t) =>
+            t._id === editingTask._id ? { ...t, ...updatedTask } : t
+          )
+        );
+        setEditingTask(null);
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  };
 
   // Priority Color
   const getPriorityColor = (level) => {
@@ -192,6 +214,14 @@ const StudyPlanner = () => {
         return compareDesc(new Date(a.deadline), new Date(b.deadline));
       }
     });
+
+  const openEditModal = (task) => {
+    setEditingTask(task);
+    setEditSubject(task.subject);
+    setEditPriority(task.priority);
+    setEditDeadline(task.deadline);
+    setEditHour(task.hour);
+  };
 
   return (
     <div className="min-h-screen mb-28 md:mb-6 mt-8 lg:mt-20">
@@ -350,6 +380,13 @@ const StudyPlanner = () => {
                       className="w-5 h-5 cursor-pointer"
                     />
                     <button
+                      onClick={() => openEditModal(task)}
+                      className="text-blue-500 cursor-pointer"
+                    >
+                      Edit
+                    </button>
+
+                    <button
                       onClick={() => handleDelete(task._id, "active")}
                       className="text-red-500 cursor-pointer"
                     >
@@ -392,6 +429,67 @@ const StudyPlanner = () => {
           )}
         </div>
       </div>
+
+      {/* update task */}
+      {editingTask && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+          <div className="bg-gray-800 rounded-lg p-6 w-96 shadow-lg text-white">
+            <h2 className="text-xl font-semibold mb-4">Edit Task</h2>
+
+            <input
+              type="text"
+              className="border p-2 rounded w-full mb-3"
+              placeholder="Subject"
+              value={editSubject}
+              onChange={(e) => setEditSubject(e.target.value)}
+            />
+            <select
+              className="border p-2 rounded w-full mb-3"
+              value={editPriority}
+              onChange={(e) => setEditPriority(e.target.value)}
+            >
+              <option className="text-black">High</option>
+              <option className="text-black">Medium</option>
+              <option className="text-black">Low</option>
+            </select>
+            <input
+              type="date"
+              className="border p-2 rounded w-full mb-3"
+              value={editDeadline}
+              onChange={(e) => setEditDeadline(e.target.value)}
+            />
+            <input
+              type="number"
+              className="border p-2 rounded w-full mb-3"
+              value={editHour}
+              onChange={(e) => setEditHour(e.target.value)}
+            />
+
+            <div className="flex justify-end gap-4">
+              <button
+                onClick={() => setEditingTask(null)}
+                className="text-gray-400 hover:text-gray-300 cursor-pointer"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleUpdateTask}
+                className="bg-[#2A4759] hover:bg-[#253b49] text-white px-4 py-2 rounded cursor-pointer"
+              >
+                Save
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {celebrate && (
+        <div className="fixed inset-0 flex items-center justify-center z-50">
+          <div className="w-full h-auto">
+            <Lottie animationData={celebrateAnimation} loop={false} />
+          </div>
+        </div>
+      )}
 
       <ThemeButton></ThemeButton>
       <Navbar></Navbar>

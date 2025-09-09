@@ -36,6 +36,7 @@ import {
 import { IoBookmark, IoBookmarkOutline } from "react-icons/io5";
 import Swal from "sweetalert2";
 import { GoHeart, GoHeartFill } from "react-icons/go";
+import ScrollToTopButton from "../../sharedItem/ScrollToTopButton";
 
 const data = [
   {
@@ -382,6 +383,7 @@ const Home = () => {
           </div>
         </div>
       )}
+      <ScrollToTopButton></ScrollToTopButton>
     </div>
   );
 };
