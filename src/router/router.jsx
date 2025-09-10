@@ -16,6 +16,8 @@ import Profile from "../page/Home/Profile";
 import MyPosts from "../components/MyPosts";
 import Saved from "../components/Saved";
 import SkillProgressTracker from "../page/Home/SkillProgressTracker";
+import ExamRoutine from "../page/Home/ExamRoutine";
+import AskBrainAi from "../page/Home/AskBrainAi";
 
 export const router = createBrowserRouter([
   {
@@ -79,6 +81,14 @@ export const router = createBrowserRouter([
       {
         path: "skill",
         Component: SkillProgressTracker,
+      },
+      {
+        path: "exRoutine",
+        Component: ExamRoutine,
+      },
+      {
+        path: "askAi",
+        Component: AskBrainAi,
       },
       {
         path: "profile",

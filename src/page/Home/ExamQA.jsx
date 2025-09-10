@@ -241,10 +241,10 @@ const QuestionCard = ({ q, idx }) => {
     <div className="min-h-screen mb-28 md:mb-6 mt-8 lg:mt-20">
       <main className="w-11/12 mx-auto py-8 md:py-12">
         <header className="text-start mb-8">
-          <h1 className="text-3xl md:text-5xl font-bold mb-2">
+          <h1 className="text-2xl md:text-3xl font-bold mb-2">
             📝 Exam Q&A Generator
           </h1>
-          <p className="text-lg md:ml-20">
+          <p className="text-lg md:ml-12">
             Instantly create quiz questions for any subject with Brain AI.
           </p>
         </header>
@@ -377,7 +377,7 @@ const QuestionCard = ({ q, idx }) => {
         {questions.length > 0 && !loading && !submitted && (
           <button
             onClick={handleSubmit}
-            className="mt-6 w-full bg-[#2A4759] hover:bg-[#253b49] text-white font-bold px-4 py-3 rounded-md"
+            className="mt-6 w-full bg-[#2A4759] hover:bg-[#253b49] text-white font-bold px-4 py-3 rounded-md cursor-pointer"
           >
             Submit Answers
           </button>

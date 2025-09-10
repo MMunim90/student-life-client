@@ -229,8 +229,8 @@ const StudyPlanner = () => {
         {/* Header */}
 
         <div className="mb-10">
-          <h1 className="text-4xl font-bold">📚 Study Planner</h1>
-          <p className="md:ml-16 mt-1">Plan smart, study better</p>
+          <h1 className="text-3xl font-bold">📚 Study Planner</h1>
+          <p className="md:ml-12 mt-1">Plan smart, study better</p>
         </div>
 
         {/* Task Input Form */}

@@ -1,6 +1,6 @@
 import React, { useContext, useState } from "react";
 import { Link, NavLink, Outlet } from "react-router";
-import { FaPlus, FaUsers } from "react-icons/fa";
+import { FaBrain, FaPlus, FaUsers } from "react-icons/fa";
 import Logo from "../sharedItem/logo";
 import { LogOut } from "lucide-react";
 import Swal from "sweetalert2";
@@ -10,6 +10,7 @@ import { GrSchedules } from "react-icons/gr";
 import { GiMoneyStack, GiSkills } from "react-icons/gi";
 import { PiExam, PiExamBold, PiStudent, PiStudentBold } from "react-icons/pi";
 import UploadForm from "../components/UploadForm";
+import { AiOutlineSchedule } from "react-icons/ai";
 
 const RootLayout = () => {
   const { user, logOut } = useContext(AuthContext);
@@ -194,6 +195,34 @@ const RootLayout = () => {
                     }
                   >
                     <GiSkills /> Skill Tracker
+                  </NavLink>
+                </li>
+                <li>
+                  <NavLink
+                    to="/app/exRoutine"
+                    className={({ isActive }) =>
+                      `flex items-center gap-2 px-3 py-2 rounded text-lg ${
+                        isActive
+                          ? "text-blue-600 font-semibold"
+                          : "hover:text-blue-500"
+                      }`
+                    }
+                  >
+                    <AiOutlineSchedule /> Exam Routine
+                  </NavLink>
+                </li>
+                <li>
+                  <NavLink
+                    to="/app/askAi"
+                    className={({ isActive }) =>
+                      `flex items-center gap-2 px-3 py-2 rounded text-lg ${
+                        isActive
+                          ? "text-blue-600 font-semibold"
+                          : "hover:text-blue-500"
+                      }`
+                    }
+                  >
+                    <FaBrain /> Ask Brain AI
                   </NavLink>
                 </li>
                 <li>

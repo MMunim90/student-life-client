@@ -159,12 +159,12 @@ const ClassSchedule = () => {
     <div className="py-24 w-11/12 mx-auto mb-8">
       {/* Header */}
       <div className="flex flex-col md:flex-row justify-between md:items-center gap-4 mb-6">
-        <h2 className="text-2xl font-bold">📅 Class Schedule Tracker</h2>
+        <h2 className="text-3xl font-bold">📅 Class Schedule Tracker</h2>
         <button
           onClick={handlePrint}
-          className="bg-[#2A4759] hover:bg-[#253b49] text-white px-8 py-2 rounded-md shadow flex items-center cursor-pointer justify-center"
+          className="bg-[#2A4759] hover:bg-[#253b49] text-white px-8 py-2 rounded-md shadow flex items-center cursor-pointer justify-center gap-2"
         >
-          <IoPrint size={25} />
+          <IoPrint size={25} /> Print
         </button>
       </div>
 
