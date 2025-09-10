@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import useAxiosSecure from "../hooks/useAxiosSecure";
 import useAuth from "../hooks/useAuth";
@@ -12,6 +12,8 @@ const Saved = () => {
   const axiosSecure = useAxiosSecure();
   const queryClient = useQueryClient();
   const formatDate = (dateString) => dayjs(dateString).format("DD/MM/YYYY");
+  const [expandedPosts, setExpandedPosts] = useState({});
+
 
   const {
     data: savedPosts = [],
@@ -40,7 +42,11 @@ const Saved = () => {
     if (result.isConfirmed) {
       try {
         await axiosSecure.delete(`/savedPosts/${id}`);
-        Swal.fire("Removed!", "Post has been removed from saved posts.", "success");
+        Swal.fire(
+          "Removed!",
+          "Post has been removed from saved posts.",
+          "success"
+        );
 
         // Refresh saved posts list
         queryClient.invalidateQueries(["savedPosts", user?.email]);
@@ -82,7 +88,28 @@ const Saved = () => {
                   className="rounded-lg w-full object-cover h-92"
                 />
               )}
-              <p className="mb-2 mt-3">{post.message}</p>
+              <p className="mb-3">
+                {post.message.split(" ").length > 22 ? (
+                  <>
+                    {expandedPosts[post._id]
+                      ? post.message
+                      : post.message.split(" ").slice(0, 20).join(" ") + "..."}
+                    <button
+                      onClick={() =>
+                        setExpandedPosts((prev) => ({
+                          ...prev,
+                          [post._id]: !prev[post._id],
+                        }))
+                      }
+                      className="text-[#4b83a5] ml-2 cursor-pointer"
+                    >
+                      {expandedPosts[post._id] ? "See Less" : "See More"}
+                    </button>
+                  </>
+                ) : (
+                  post.message
+                )}
+              </p>
 
               <div className="flex items-center gap-3 mb-2">
                 <img
@@ -96,7 +123,8 @@ const Saved = () => {
                     <p className="text-sm text-gray-500">{post.category}</p>
                   </div>
                   <p className="text-gray-400 flex items-center gap-2 justify-start">
-                    <FaHourglassStart /> {formatDate(user.metadata.creationTime)}
+                    <FaHourglassStart />{" "}
+                    {formatDate(user.metadata.creationTime)}
                   </p>
                 </div>
               </div>

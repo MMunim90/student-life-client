@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import useAuth from "../hooks/useAuth";
 import useAxiosSecure from "../hooks/useAxiosSecure";
@@ -13,6 +13,7 @@ const MyPosts = () => {
   const axiosSecure = useAxiosSecure();
   const queryClient = useQueryClient();
   const formatDate = (dateString) => dayjs(dateString).format("DD/MM/YYYY");
+  const [expandedPosts, setExpandedPosts] = useState({});
 
   const {
     data: posts = [],
@@ -75,15 +76,13 @@ const MyPosts = () => {
               className="border border-gray-300 rounded-lg shadow-lg hover:shadow-2xl flex flex-col p-4 relative"
             >
               <div className="flex justify-between mb-4">
-                <p className="">
-                Category: {post.category}
-              </p>
-              <button
-                onClick={() => handleDelete(post._id)}
-                className="cursor-pointer"
-              >
-                Delete
-              </button>
+                <p className="">Category: {post.category}</p>
+                <button
+                  onClick={() => handleDelete(post._id)}
+                  className="cursor-pointer"
+                >
+                  Delete
+                </button>
               </div>
 
               {post.image && (
@@ -94,7 +93,29 @@ const MyPosts = () => {
                 />
               )}
               <div className="flex-1 flex flex-col mt-3">
-                <p className="mb-2">{post.message}</p>
+                <p className="mb-3">
+                  {post.message.split(" ").length > 22 ? (
+                    <>
+                      {expandedPosts[post._id]
+                        ? post.message
+                        : post.message.split(" ").slice(0, 20).join(" ") +
+                          "..."}
+                      <button
+                        onClick={() =>
+                          setExpandedPosts((prev) => ({
+                            ...prev,
+                            [post._id]: !prev[post._id],
+                          }))
+                        }
+                        className="text-[#4b83a5] ml-2 cursor-pointer"
+                      >
+                        {expandedPosts[post._id] ? "See Less" : "See More"}
+                      </button>
+                    </>
+                  ) : (
+                    post.message
+                  )}
+                </p>
                 <p className="text-gray-400 flex items-center gap-2 justify-start">
                   <FaHourglassStart /> {formatDate(user.metadata.creationTime)}
                 </p>

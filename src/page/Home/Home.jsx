@@ -67,6 +67,7 @@ const Home = () => {
   const [hasSaved, setHasSaved] = useState({});
   const queryClient = useQueryClient();
   const [imgOpen, setImgOpen] = useState(null);
+  const [expandedPosts, setExpandedPosts] = useState({});
 
   const shareUrl = window.location.href;
 
@@ -194,7 +195,7 @@ const Home = () => {
                     <div>
                       <div className="flex gap-3">
                         <p className="font-semibold">{post.userName}</p>
-                        <p className="text-sm text-gray-500">{post.category}</p>
+                        <p className="text-sm text-gray-400">{post.category}</p>
                       </div>
                       <p className="text-gray-400 flex items-center gap-2 justify-start">
                         <FaHourglassStart />{" "}
@@ -202,7 +203,30 @@ const Home = () => {
                       </p>
                     </div>
                   </div>
-                  <p className="mb-3">{post.message}</p>
+                  <p className="mb-3">
+                    {post.message.split(" ").length > 22 ? (
+                      <>
+                        {expandedPosts[post._id]
+                          ? post.message
+                          : post.message.split(" ").slice(0, 20).join(" ") +
+                            "..."}
+                        <button
+                          onClick={() =>
+                            setExpandedPosts((prev) => ({
+                              ...prev,
+                              [post._id]: !prev[post._id],
+                            }))
+                          }
+                          className="text-[#4b83a5] ml-2 cursor-pointer"
+                        >
+                          {expandedPosts[post._id] ? "See Less" : "See More"}
+                        </button>
+                      </>
+                    ) : (
+                      post.message
+                    )}
+                  </p>
+
                   {post.image && (
                     <img
                       onClick={() => setImgOpen(post.image)}

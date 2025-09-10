@@ -233,7 +233,7 @@ const BudgetTracker = () => {
                 </thead>
                 <tbody>
                   {transactions.map((t) => (
-                    <tr key={t._id} className="border-t hover:bg-gray-50">
+                    <tr key={t._id} className="border-t hover:bg-gray-50 hover:text-black">
                       <td
                         className={`p-2 font-medium ${
                           t.type === "income"
