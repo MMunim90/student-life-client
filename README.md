@@ -142,6 +142,8 @@ nodemon index.js
 ```
 
 ---
+### BrainBox Server Repository -> [Click Here](https://github.com/MMunim90/student-life-server)
+---
 
 ## 🤝 Contribution
 
