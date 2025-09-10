@@ -85,11 +85,29 @@ I consider home page as a unique feature because, In the Home page, students or 
 
 * **Blog**: For all other student life–related posts.
 
+### Class Schedule Tracker
+![Class Schedule Tracker](https://i.ibb.co.com/XZLCxhw6/class-schedule.png)
+
+### Budget Tracker
+![Budget Tracker](https://i.ibb.co.com/RGXwkYb9/budget-tracker.png)
+
+### Exam Q&A Generator (AI Powered)
+![Exam Q&A Generator](https://i.ibb.co.com/5gk1d03D/examqa.png)
+
+### Study Planner
+![Study Planner](https://i.ibb.co.com/prx8Vv76/study-Planner.png)
+
 ### Login Page
 ![login](https://i.ibb.co.com/tTtDPhMX/Screenshot-2025-09-04-124537.png)
 
 ### Profile Page
-![Budget Tracker](https://i.ibb.co.com/qYMMNQjn/Screenshot-2025-09-04-124455.png)
+![Profile Page](https://i.ibb.co.com/qYMMNQjn/Screenshot-2025-09-04-124455.png)
+
+### Other Unique Feature
+
+* Skill Tracker
+* Exam Routine Manager
+* Ask Brain AI (AI Powered)
 
 ---
 
