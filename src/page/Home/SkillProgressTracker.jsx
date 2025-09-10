@@ -14,7 +14,7 @@ const SkillProgressTracker = () => {
   const [newSkill, setNewSkill] = useState("");
   const [goal, setGoal] = useState("");
   const [milestone, setMilestone] = useState("");
-  const [progress, setProgress] = useState(0);
+  const [progress, setProgress] = useState("");
 
   // modal state
   const [editingSkill, setEditingSkill] = useState(null);
@@ -48,7 +48,7 @@ const SkillProgressTracker = () => {
       skill: newSkill,
       goal,
       milestone,
-      progress: Number(progress),
+      progress: progress === "" ? 0 : Number(progress),
       startDate,
       endDate,
       status: "in-progress",

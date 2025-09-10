@@ -230,7 +230,7 @@ const StudyPlanner = () => {
 
         <div className="mb-10">
           <h1 className="text-4xl font-bold">📚 Study Planner</h1>
-          <p className="ml-16 mt-1">Plan smart, study better</p>
+          <p className="md:ml-16 mt-1">Plan smart, study better</p>
         </div>
 
         {/* Task Input Form */}
@@ -347,7 +347,7 @@ const StudyPlanner = () => {
                         {Math.floor((timers[task._id] % 60000) / 1000)}s
                       </p>
                     ) : (
-                      <p className="text-sm text-gray-500">⏱ {task.hour}h</p>
+                      <p className="text-xl text-gray-500">⏱ {task.hour}h</p>
                     )}
                     <div className="flex flex-wrap gap-2 mt-2">
                       <button
