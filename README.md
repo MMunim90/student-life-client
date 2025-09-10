@@ -105,9 +105,9 @@ I consider home page as a unique feature because, In the Home page, students or 
 
 ### Other Unique Feature
 
-* Skill Tracker
-* Exam Routine Manager
-* Ask Brain AI (AI Powered)
+* Skill Tracker ( A student can track his/her skill from here)
+* Exam Routine Manager (A student can manage his/her exam schedule from here)
+* Ask Brain AI (AI Powered) (give a prompt and generate a answer)
 
 ---
 
