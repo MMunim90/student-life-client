@@ -13,7 +13,7 @@ const Saved = () => {
   const queryClient = useQueryClient();
   const formatDate = (dateString) => dayjs(dateString).format("DD/MM/YYYY");
   const [expandedPosts, setExpandedPosts] = useState({});
-
+  const [imgOpen, setImgOpen] = useState(null);
 
   const {
     data: savedPosts = [],
@@ -83,12 +83,37 @@ const Saved = () => {
 
               {post.image && (
                 <img
+                  onClick={() => setImgOpen(post.image)}
                   src={post.image}
                   alt="Post"
-                  className="rounded-lg w-full object-cover h-92"
+                  className="rounded-lg w-full object-cover h-92 cursor-pointer"
                 />
               )}
-              <p className="mb-3">
+
+              {imgOpen && (
+                <div className="fixed inset-0 flex items-center justify-center bg-black/20 z-50">
+                  <div className="w-11/12 max-w-2xl p-6 overflow-y-auto max-h-[90vh]">
+                    {/* Header */}
+
+                    <button
+                      onClick={() => setImgOpen(null)}
+                      className="text-gray-400 hover:text-gray-500 text-2xl font-bold cursor-pointer absolute top-6 right-6"
+                    >
+                      ✕
+                    </button>
+
+                    {/* Image */}
+                    <div className="flex justify-center">
+                      <img
+                        src={imgOpen}
+                        alt="Post preview"
+                        className="rounded-lg max-h-[75vh] object-contain"
+                      />
+                    </div>
+                  </div>
+                </div>
+              )}
+              <p className="mb-3 mt-3">
                 {post.message.split(" ").length > 22 ? (
                   <>
                     {expandedPosts[post._id]
@@ -113,9 +138,10 @@ const Saved = () => {
 
               <div className="flex items-center gap-3 mb-2">
                 <img
+                  onClick={() => setImgOpen(post.posterImage)}
                   src={post.posterImage}
                   alt={post.posterName}
-                  className="w-10 h-10 rounded-full object-cover"
+                  className="w-10 h-10 rounded-full object-cover cursor-pointer"
                 />
                 <div>
                   <div className="flex gap-3">

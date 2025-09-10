@@ -358,7 +358,7 @@ const ClassSchedule = () => {
               className="border rounded px-3 py-2 mb-2 w-full"
             >
               {days.map((d) => (
-                <option key={d}>{d}</option>
+                <option className="text-black" key={d}>{d}</option>
               ))}
             </select>
             <input
