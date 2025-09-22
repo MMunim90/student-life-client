@@ -7,7 +7,6 @@ import { RxExternalLink } from "react-icons/rx";
 import Navbar from "../../sharedItem/Navbar";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import useAxiosSecure from "../../hooks/useAxiosSecure";
-import Loading from "../../sharedItem/Loading";
 import dayjs from "dayjs";
 import { FaHourglassStart } from "react-icons/fa";
 import useAuth from "../../hooks/useAuth";
@@ -37,6 +36,7 @@ import { IoBookmark, IoBookmarkOutline } from "react-icons/io5";
 import Swal from "sweetalert2";
 import { GoHeart, GoHeartFill } from "react-icons/go";
 import ScrollToTopButton from "../../sharedItem/ScrollToTopButton";
+import PostCardSkeleton from "../../sharedItem/PostCardSkeleton";
 
 const data = [
   {
@@ -62,7 +62,7 @@ const data = [
 const Home = () => {
   const { user } = useAuth();
   const axiosSecure = useAxiosSecure();
-  const formatDate = (dateString) => dayjs(dateString).format("DD/MM/YYYY");
+  const formatDate = (dateString) => dayjs(dateString).format("DD/MM/YYYY hh:mm A");
   const [isOpen, setIsOpen] = useState(false);
   const [hasSaved, setHasSaved] = useState({});
   const queryClient = useQueryClient();
@@ -176,8 +176,10 @@ const Home = () => {
         <section className="main col-span-12 xl:col-span-9 lg:mr-10 mx-1">
           <div>
             {isLoading && (
-              <div>
-                <Loading></Loading>
+              <div className="space-y-4 mb-28 md:mb-8 mt-4 md:w-1/2 md:mx-auto">
+                {[...Array(5)].map((_, i) => (
+                  <PostCardSkeleton key={i} />
+                ))}
               </div>
             )}
             {isError && <p className="text-red-500">Failed to load posts</p>}
@@ -199,7 +201,7 @@ const Home = () => {
                       </div>
                       <p className="text-gray-400 flex items-center gap-2 justify-start">
                         <FaHourglassStart />{" "}
-                        {formatDate(user.metadata.creationTime)}
+                        {formatDate(post.createdAt)}
                       </p>
                     </div>
                   </div>

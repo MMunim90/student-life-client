@@ -2,10 +2,10 @@ import React, { useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import useAxiosSecure from "../hooks/useAxiosSecure";
 import useAuth from "../hooks/useAuth";
-import Loading from "../sharedItem/Loading";
 import Swal from "sweetalert2";
 import { FaHourglassStart } from "react-icons/fa";
 import dayjs from "dayjs";
+import PostManageCardSkeleton from "../sharedItem/PostManageCardSkeleton";
 
 const Saved = () => {
   const { user } = useAuth();
@@ -57,7 +57,16 @@ const Saved = () => {
     }
   };
 
-  if (isLoading) return <Loading />;
+  if (isLoading)
+    return (
+      <div className="w-11/12 lg:w-9/12 mx-auto my-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 mb-28 md:mb-8">
+          {[...Array(6)].map((_, i) => (
+            <PostManageCardSkeleton key={i} />
+          ))}
+        </div>
+      </div>
+    );
   if (isError)
     return <p className="text-red-500">Failed to load saved posts</p>;
 

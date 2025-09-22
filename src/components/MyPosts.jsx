@@ -2,17 +2,18 @@ import React, { useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import useAuth from "../hooks/useAuth";
 import useAxiosSecure from "../hooks/useAxiosSecure";
-import Loading from "../sharedItem/Loading";
+// import Loading from "../sharedItem/Loading";
 import Swal from "sweetalert2";
 import { MdDelete } from "react-icons/md";
 import dayjs from "dayjs";
 import { FaHourglassStart } from "react-icons/fa";
+import SkeletonCard from "../sharedItem/SkeletonCard";
 
 const MyPosts = () => {
   const { user } = useAuth();
   const axiosSecure = useAxiosSecure();
   const queryClient = useQueryClient();
-  const formatDate = (dateString) => dayjs(dateString).format("DD/MM/YYYY");
+  const formatDate = (dateString) => dayjs(dateString).format("DD/MM/YYYY hh:mm A");
   const [expandedPosts, setExpandedPosts] = useState({});
   const [imgOpen, setImgOpen] = useState(null);
 
@@ -57,8 +58,12 @@ const MyPosts = () => {
 
   if (isLoading)
     return (
-      <div>
-        <Loading />
+      <div className="w-11/12 lg:w-9/12 mx-auto my-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 mb-28 md:mb-8">
+        {[...Array(6)].map((_, i) => (
+          <SkeletonCard key={i} />
+        ))}
+      </div>
       </div>
     );
   if (isError) return <p className="text-red-500">Failed to load posts</p>;
@@ -143,7 +148,7 @@ const MyPosts = () => {
                   )}
                 </p>
                 <p className="text-gray-400 flex items-center gap-2 justify-start">
-                  <FaHourglassStart /> {formatDate(user.metadata.creationTime)}
+                  <FaHourglassStart /> {formatDate(post.createdAt)}
                 </p>
               </div>
             </div>
