@@ -62,7 +62,8 @@ const data = [
 const Home = () => {
   const { user } = useAuth();
   const axiosSecure = useAxiosSecure();
-  const formatDate = (dateString) => dayjs(dateString).format("DD/MM/YYYY hh:mm A");
+  const formatDate = (dateString) =>
+    dayjs(dateString).format("DD/MM/YYYY hh:mm A");
   const [isOpen, setIsOpen] = useState(false);
   const [hasSaved, setHasSaved] = useState({});
   const queryClient = useQueryClient();
@@ -166,6 +167,34 @@ const Home = () => {
     }
   };
 
+  const storiesData = [
+    {
+      id: 1,
+      name: "All",
+      image: "https://i.pravatar.cc/150?img=1",
+    },
+    {
+      id: 2,
+      name: "Job",
+      image: "https://i.pravatar.cc/150?img=2",
+    },
+    {
+      id: 3,
+      name: "Education",
+      image: "https://i.pravatar.cc/150?img=3",
+    },
+    {
+      id: 4,
+      name: "Achievement",
+      image: "https://i.pravatar.cc/150?img=4",
+    },
+    {
+      id: 5,
+      name: "Blog",
+      image: "https://i.pravatar.cc/150?img=5",
+    },
+  ];
+
   return (
     <div>
       <div className="lg:hidden">
@@ -174,6 +203,28 @@ const Home = () => {
 
       <div className="w-11/12 mx-auto my-3 grid grid-cols-12 gap-5 mt-6">
         <section className="main col-span-12 xl:col-span-9 lg:mr-10 mx-1">
+          <div className="w-full py-4">
+            <div className="flex gap-4 md:gap-12 lg:gap-16 px-2 justify-center">
+              {storiesData.map((story) => (
+                <div
+                  key={story.id}
+                  className="flex flex-col items-center text-center w-14 md:w-16 flex-shrink-0 cursor-pointer"
+                >
+                  <div className="w-16 h-16 rounded-full p-[2px] bg-gradient-to-tr from-yellow-400 via-pink-500 to-purple-600">
+                    <img
+                      src={story.image}
+                      alt={story.name}
+                      className="w-full h-full rounded-full object-cover border-2 border-black"
+                    />
+                  </div>
+                  <p className="text-xs mt-1 truncate w-full">
+                    {story.name}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </div>
+
           <div>
             {isLoading && (
               <div className="space-y-4 mb-28 md:mb-8 mt-4 md:w-1/2 md:mx-auto">
@@ -200,8 +251,7 @@ const Home = () => {
                         <p className="text-sm text-gray-400">{post.category}</p>
                       </div>
                       <p className="text-gray-400 flex items-center gap-2 justify-start">
-                        <FaHourglassStart />{" "}
-                        {formatDate(post.createdAt)}
+                        <FaHourglassStart /> {formatDate(post.createdAt)}
                       </p>
                     </div>
                   </div>

@@ -7,6 +7,7 @@ import ThemeButton from "../../sharedItem/ThemeButton";
 import Navbar from "../../sharedItem/Navbar";
 import Lottie from "lottie-react";
 import celebrateAnimation from "../../assets/lottie/celebrate.json";
+import celebrationSound from "../../assets/sounds/celebreteSound1.mp3";
 
 const SkillProgressTracker = () => {
   const { user } = useAuth();
@@ -71,8 +72,13 @@ const SkillProgressTracker = () => {
       progress: 100,
     });
 
+    // play sound
+    const audio = new Audio(celebrationSound);
+    audio.play();
+
+    // show animation
     setCelebrate(true);
-    setTimeout(() => setCelebrate(false), 3000);
+    setTimeout(() => setCelebrate(false), 5000);
     refetch();
   };
 

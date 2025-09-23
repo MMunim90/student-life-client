@@ -6,6 +6,7 @@ import useAxiosSecure from "../../hooks/useAxiosSecure";
 import useAuth from "../../hooks/useAuth";
 import Lottie from "lottie-react";
 import celebrateAnimation from "../../assets/lottie/Celebration.json";
+import celebrationSound from "../../assets/sounds/celebreteSound2.mp3";
 
 const StudyPlanner = () => {
   const axiosSecure = useAxiosSecure();
@@ -122,9 +123,13 @@ const StudyPlanner = () => {
 
       if (res.data.modifiedCount > 0) {
         if (!task.isCompleted) {
+          // Play sound
+          const audio = new Audio(celebrationSound);
+          audio.play().catch((err) => console.error("Audio play failed:", err));
+
           // Show celebration animation
           setCelebrate(true);
-          setTimeout(() => setCelebrate(false), 3000);
+          setTimeout(() => setCelebrate(false), 5000);
 
           // Move to completed
           setTasks(tasks.filter((t) => t._id !== task._id));
