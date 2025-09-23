@@ -37,6 +37,13 @@ import Swal from "sweetalert2";
 import { GoHeart, GoHeartFill } from "react-icons/go";
 import ScrollToTopButton from "../../sharedItem/ScrollToTopButton";
 import PostCardSkeleton from "../../sharedItem/PostCardSkeleton";
+import {
+  Briefcase,
+  GraduationCap,
+  Award,
+  FileText,
+  Layers,
+} from "lucide-react";
 
 const data = [
   {
@@ -69,6 +76,7 @@ const Home = () => {
   const queryClient = useQueryClient();
   const [imgOpen, setImgOpen] = useState(null);
   const [expandedPosts, setExpandedPosts] = useState({});
+  const [selectedCategory, setSelectedCategory] = useState("All");
 
   const shareUrl = window.location.href;
 
@@ -84,6 +92,24 @@ const Home = () => {
     },
   });
 
+  // ---- Filter posts by selected category ----
+  const filteredPosts =
+    selectedCategory === "All"
+      ? posts
+      : posts.filter(
+          (post) =>
+            post.category &&
+            post.category.toLowerCase() === selectedCategory.toLowerCase()
+        );
+
+  const storiesData = [
+    { id: 1, name: "All", icon: Layers },
+    { id: 2, name: "Job", icon: Briefcase },
+    { id: 3, name: "Education", icon: GraduationCap },
+    { id: 4, name: "Achievement", icon: Award },
+    { id: 5, name: "Blog", icon: FileText },
+  ];
+
   const handleSave = async (post) => {
     try {
       await axiosSecure.post("/savedPosts", {
@@ -95,6 +121,7 @@ const Home = () => {
         message: post.message,
         image: post.image,
         category: post.category,
+        createdAt: post.createdAt,
       });
 
       Swal.fire({
@@ -167,33 +194,6 @@ const Home = () => {
     }
   };
 
-  const storiesData = [
-    {
-      id: 1,
-      name: "All",
-      image: "https://i.pravatar.cc/150?img=1",
-    },
-    {
-      id: 2,
-      name: "Job",
-      image: "https://i.pravatar.cc/150?img=2",
-    },
-    {
-      id: 3,
-      name: "Education",
-      image: "https://i.pravatar.cc/150?img=3",
-    },
-    {
-      id: 4,
-      name: "Achievement",
-      image: "https://i.pravatar.cc/150?img=4",
-    },
-    {
-      id: 5,
-      name: "Blog",
-      image: "https://i.pravatar.cc/150?img=5",
-    },
-  ];
 
   return (
     <div>
@@ -205,23 +205,32 @@ const Home = () => {
         <section className="main col-span-12 xl:col-span-9 lg:mr-10 mx-1">
           <div className="w-full py-4">
             <div className="flex gap-4 md:gap-12 lg:gap-16 px-2 justify-center">
-              {storiesData.map((story) => (
-                <div
-                  key={story.id}
-                  className="flex flex-col items-center text-center w-14 md:w-16 flex-shrink-0 cursor-pointer"
-                >
-                  <div className="w-16 h-16 rounded-full p-[2px] bg-gradient-to-tr from-yellow-400 via-pink-500 to-purple-600">
-                    <img
-                      src={story.image}
-                      alt={story.name}
-                      className="w-full h-full rounded-full object-cover border-2 border-black"
-                    />
+              {storiesData.map((story) => {
+                const Icon = story.icon;
+                const isActive = selectedCategory === story.name;
+                return (
+                  <div
+                    key={story.id}
+                    onClick={() => setSelectedCategory(story.name)}
+                    className={`flex flex-col items-center text-center w-14 md:w-16 flex-shrink-0 cursor-pointer ${
+                      isActive ? "text-[#5b87a3]" : ""
+                    }`}
+                  >
+                    <div
+                      className={`w-16 h-16 rounded-full p-[3px] ${
+                        isActive
+                          ? "bg-gradient-to-tr from-[#93b7ce] via-[#4d728a] to-[#253b49]"
+                          : "bg-[#1e3949]"
+                      }`}
+                    >
+                      <div className="w-full h-full rounded-full border-2 border-black flex items-center justify-center bg-black">
+                        <Icon className="w-7 h-7 text-white" />
+                      </div>
+                    </div>
+                    <p className="text-xs mt-1 truncate w-full">{story.name}</p>
                   </div>
-                  <p className="text-xs mt-1 truncate w-full">
-                    {story.name}
-                  </p>
-                </div>
-              ))}
+                );
+              })}
             </div>
           </div>
 
@@ -236,7 +245,8 @@ const Home = () => {
             {isError && <p className="text-red-500">Failed to load posts</p>}
 
             <div className="space-y-4 mb-28 md:mb-8 mt-4 md:w-1/2 md:mx-auto">
-              {posts.map((post) => (
+              {filteredPosts.length > 0 ? (
+                filteredPosts.map((post) => (
                 <div key={post._id} className="p-4 border-b border-gray-400">
                   <div className="flex items-center gap-3 mb-2">
                     <img
@@ -360,7 +370,12 @@ const Home = () => {
                     {(post.likes || []).length} Likes
                   </span>
                 </div>
-              ))}
+              ))
+              ) : (
+                <p className="text-center text-gray-500">
+                  No posts available in {selectedCategory}
+                </p>
+              )}
             </div>
           </div>
         </section>
@@ -388,7 +403,7 @@ const Home = () => {
                 ))}
               </div>
             </div>
-            <div className="border-2 px-4 py-2 rounded-md">
+            <div className="border-2 px-4 py-2 rounded-md mt-4">
               <h1 className="text-2xl mb-2 border-b-2 pb-2">Contact</h1>
               <div className="space-y-2">
                 <p className="flex gap-3 text-lg items-center">

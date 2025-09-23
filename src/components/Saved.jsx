@@ -11,7 +11,7 @@ const Saved = () => {
   const { user } = useAuth();
   const axiosSecure = useAxiosSecure();
   const queryClient = useQueryClient();
-  const formatDate = (dateString) => dayjs(dateString).format("DD/MM/YYYY");
+  const formatDate = (dateString) => dayjs(dateString).format("DD/MM/YYYY hh:mm A");
   const [expandedPosts, setExpandedPosts] = useState({});
   const [imgOpen, setImgOpen] = useState(null);
 
@@ -80,8 +80,8 @@ const Saved = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 mb-28 md:mb-8">
           {savedPosts.map((post) => (
             <div
-              key={post._id}
-              className="border border-gray-300 p-4 rounded-md shadow-lg"
+            key={post._id}
+            className="border border-gray-300 p-4 rounded-md shadow-lg"
             >
               <button
                 onClick={() => handleDelete(post._id)}
@@ -159,7 +159,7 @@ const Saved = () => {
                   </div>
                   <p className="text-gray-400 flex items-center gap-2 justify-start">
                     <FaHourglassStart />{" "}
-                    {formatDate(user.metadata.creationTime)}
+                    {formatDate(post.createdAt)}
                   </p>
                 </div>
               </div>
