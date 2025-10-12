@@ -124,7 +124,7 @@ const AskBrainAi = () => {
       <div className="relative flex w-full min-h-screen">
         {/* Sidebar */}
         <div
-          className={`min-h-screen fixed lg:static top-0 left-0 h-full w-72 border-r border-gray-400 bg-[#1e293b] lg:bg-transparent text-white transform transition-transform duration-300 z-40 lg:z-20
+          className={`min-h-screen fixed lg:static top-0 left-0 h-full w-72 lg:w-64 border-r border-gray-400 bg-[#1e293b] lg:bg-transparent text-white transform transition-transform duration-300 z-40 lg:z-20
           ${
             showSidebar
               ? "translate-x-0"
@@ -159,7 +159,7 @@ const AskBrainAi = () => {
             {history.length === 0 ? (
               <p className="text-sm text-gray-400">No history yet</p>
             ) : (
-              <ul className="space-y-2">
+              <ul className="space-y-2 mb-16">
                 {history.map((item) => (
                   <li
                     key={item.id}
@@ -176,7 +176,7 @@ const AskBrainAi = () => {
 
           {history.length > 0 && showSidebar && (
             <button
-              className="fixed bottom-4 text-gray-400 hover:text-gray-500 mt-20 px-4 py-2 z-50 w-full flex gap-3 items-center justify-center cursor-pointer"
+              className="fixed bottom-0 text-white px-4 py-2 z-50 bg-red-500 hover:bg-red-600 w-full flex gap-3 items-center justify-center cursor-pointer"
               onClick={clearHistory}
             >
               <Trash2 size={16} /> Clear History
@@ -185,7 +185,7 @@ const AskBrainAi = () => {
 
           {/* Collapse Button */}
           <button
-            className="absolute top-1/2 right-[-36px] lg:right-[-20px] transform -translate-y-1/2 bg-gray-700 p-2 rounded-r-md hover:bg-gray-600 cursor-pointer"
+            className="absolute top-1/2 right-[-36px] transform -translate-y-1/2 bg-gray-700 p-2 rounded-r-md hover:bg-gray-600 cursor-pointer"
             onClick={() => setShowSidebar(!showSidebar)}
           >
             {showSidebar ? (

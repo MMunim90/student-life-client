@@ -159,9 +159,9 @@ const About = () => {
             Update History
           </h2>
           <h3 className="text-center text-sm mb-10">Last Update - 12/10/2025, 08:00 am</h3>
-          <p className="text-center text-lg">* Added History Feature on <Link className="text-blue-500 hover:underline" to="/app/askAi">Ask Brain AI</Link> Page</p>
+          <p className="text-center text-lg">* Added History Feature and Chat Bubble on <Link className="text-blue-500 hover:underline" to="/app/askAi">Ask Brain AI</Link> Page</p>
           <p className="text-center text-lg">* Added loading before data fetching on <Link className="text-blue-500 hover:underline" to="/app/class">Class Schedule</Link>, <Link className="text-blue-500 hover:underline" to="/app/budget">Budget Tracker</Link>, <Link className="text-blue-500 hover:underline" to="/app/study">Study Planner</Link> and <Link className="text-blue-500 hover:underline" to="/app/exRoutine">Exam Routine</Link> page</p>
-          <p className="text-center text-lg">* Added Timer Feature and Fixes Bug on <Link className="text-blue-500 hover:underline" to="/app/exam">Exam Q&A</Link> page</p>
+          <p className="text-center text-lg">* Added Timer Feature, History Feature and Fixes Bug on <Link className="text-blue-500 hover:underline" to="/app/exam">Exam Q&A</Link> page</p>
         </div>
       </section>
 

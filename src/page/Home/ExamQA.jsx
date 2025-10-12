@@ -19,6 +19,16 @@ export default function App() {
   const [timeLeft, setTimeLeft] = useState(null);
   const [timeUp, setTimeUp] = useState(false);
 
+  // 🆕 History state
+  const [history, setHistory] = useState([]);
+  const [drawerOpen, setDrawerOpen] = useState(false);
+
+  // 🆕 Load history from localStorage
+  useEffect(() => {
+    const savedHistory = JSON.parse(localStorage.getItem("examHistory")) || [];
+    setHistory(savedHistory);
+  }, []);
+
   // Timer useEffect
   useEffect(() => {
     if (questions.length === 0) return;
@@ -29,8 +39,7 @@ export default function App() {
       setTimeLeft((prev) => {
         if (prev <= 1) {
           clearInterval(timer);
-          setTimeUp(true); // mark time up
-
+          setTimeUp(true);
           const allAnswered =
             Object.keys(userAnswers).length === questions.length;
           if (!submitted) {
@@ -44,7 +53,6 @@ export default function App() {
               handleSubmit(true);
             }
           }
-
           return 0;
         }
         return prev - 1;
@@ -90,7 +98,6 @@ export default function App() {
     `;
   };
 
-  // Fetch questions from Gemini
   const generateQuestions = async () => {
     if (!subject) {
       setError("Please enter a subject or topic.");
@@ -107,6 +114,7 @@ export default function App() {
     setUserAnswers({});
     setSubmitted(false);
     setFeedback({});
+    setTimeUp(false);
 
     const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
     const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${apiKey}`;
@@ -162,14 +170,12 @@ export default function App() {
     }
   };
 
-  // Handle option selection
   const handleSelect = (qIndex, option) => {
     if (!submitted) {
       setUserAnswers((prev) => ({ ...prev, [qIndex]: option }));
     }
   };
 
-  // Get AI feedback for a single question
   const getFeedback = async (qIndex, q, userAnswer) => {
     const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
     const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${apiKey}`;
@@ -178,9 +184,7 @@ export default function App() {
       The question was: "${q.question}".
       The correct answer is: "${q.answer}".
       The student answered: "${userAnswer}".
-
-      Give a short feedback (1-2 sentences) explaining if it's correct,
-      and if not, a suggestion or learning tip.
+      Give short feedback (1-2 sentences).
     `;
 
     const payload = {
@@ -201,10 +205,9 @@ export default function App() {
     }
   };
 
-  // Updated handleSubmit
+  // 🆕 handleSubmit with history saving
   const handleSubmit = async () => {
     const allAnswered = Object.keys(userAnswers).length === questions.length;
-
     if (!allAnswered) {
       setError("Please answer all questions before submitting.");
       return;
@@ -213,16 +216,32 @@ export default function App() {
     setError(null);
     setSubmitted(true);
 
+    let correctCount = 0;
     for (let i = 0; i < questions.length; i++) {
+      if (userAnswers[i] === questions[i].answer) correctCount++;
       await getFeedback(i, questions[i], userAnswers[i]);
     }
+
+    const wrongCount = questions.length - correctCount;
+
+    const newResult = {
+      topic: subject,
+      type,
+      difficulty,
+      totalQuestions: questions.length,
+      correct: correctCount,
+      wrong: wrongCount,
+      finishTime: new Date().toLocaleString(),
+    };
+
+    const updatedHistory = [newResult, ...history].slice(0, 5);
+    setHistory(updatedHistory);
+    localStorage.setItem("examHistory", JSON.stringify(updatedHistory));
   };
 
-  // Question Card
   const QuestionCard = ({ q, idx }) => {
     const userAnswer = userAnswers[idx];
     const isCorrect = submitted && userAnswer === q.answer;
-
     const disableClick = submitted || timeUp;
 
     return (
@@ -230,13 +249,11 @@ export default function App() {
         <p className="font-semibold text-lg mb-3">
           {idx + 1}. {q.question}
         </p>
-
         {q.options && (
           <ul className="space-y-2 mb-3">
             {q.options.map((opt, i) => {
               const isSelected = userAnswer === opt;
               const showCorrect = submitted && q.answer === opt && !isSelected;
-
               return (
                 <li
                   key={i}
@@ -245,10 +262,10 @@ export default function App() {
                     isSelected ? "bg-blue-100 border-blue-500 text-black" : ""
                   } ${
                     submitted
-                      ? isCorrect
-                        ? "border-green-500 bg-green-100 text-black"
+                      ? isCorrect && isSelected
+                        ? "bg-green-100 border-green-500"
                         : isSelected
-                        ? "border-red-500 bg-red-100 text-black"
+                        ? "border-red-500 bg-red-100"
                         : showCorrect
                         ? "border-green-500 bg-green-50 text-black"
                         : ""
@@ -273,7 +290,6 @@ export default function App() {
             >
               {isCorrect ? "✅ Correct!" : `❌ Incorrect. Answer: ${q.answer}`}
             </p>
-
             {feedback[idx] && (
               <p className="mt-2 text-sm text-gray-700 bg-gray-100 rounded-md p-2">
                 💡 {feedback[idx]}
@@ -286,182 +302,223 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen mb-28 md:mb-6 mt-8 lg:mt-20">
-      <main className="w-11/12 mx-auto py-8 md:py-12">
-        <header className="text-start mb-8">
-          <h1 className="text-2xl md:text-3xl font-bold mb-2">
-            📝 Exam Q&A Generator
-          </h1>
-          <p className="text-lg md:ml-12">
-            Instantly create quiz questions for any subject with Brain AI.
-          </p>
-        </header>
+    <div>
+      <div className="min-h-screen mb-28 md:mb-6 mt-8 lg:mt-20 relative">
+        <main className="w-11/12 mx-auto py-8 md:py-12">
+          <header className="text-start mb-8">
+            <h1 className="text-2xl md:text-3xl font-bold mb-2">
+              📝 Exam Q&A Generator
+            </h1>
+            <p className="text-lg md:ml-12">
+              Instantly create quiz questions for any subject with Brain AI.
+            </p>
+          </header>
 
-        {/* Timer Display */}
-        {questions.length > 0 && !submitted && (
-          <div className="text-center mb-4 text-lg font-semibold text-blue-600">
-            ⏱ Time Left: {formatTime(timeLeft)}
-          </div>
-        )}
-
-        {/* Input Section */}
-        <div className="border rounded-lg p-5 mb-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4 items-end">
-            <div className="lg:col-span-2">
-              <input
-                id="subject-input"
-                type="text"
-                placeholder="e.g., 'World War II' or 'React Hooks'"
-                value={subject}
-                onChange={(e) => setSubject(e.target.value)}
-                className="w-full border rounded-md px-4 py-2 focus:outline-none focus:ring-2"
-              />
-            </div>
-            <div>
-              <select
-                id="type-select"
-                value={type}
-                onChange={(e) => setType(e.target.value)}
-                className="w-full border rounded-md px-4 py-2 focus:outline-none focus:ring-2"
-              >
-                <option className="text-black" value="mcq">
-                  MCQ
-                </option>
-                <option className="text-black" value="truefalse">
-                  True/False
-                </option>
-                <option className="text-black" value="short">
-                  Short Answer
-                </option>
-              </select>
-            </div>
-            <div>
-              <select
-                id="difficulty-select"
-                value={difficulty}
-                onChange={(e) => setDifficulty(e.target.value)}
-                className="w-full border rounded-md px-4 py-2 focus:outline-none focus:ring-2"
-              >
-                <option className="text-black" value="easy">
-                  Easy
-                </option>
-                <option className="text-black" value="medium">
-                  Medium
-                </option>
-                <option className="text-black" value="hard">
-                  Hard
-                </option>
-              </select>
-            </div>
-            <div>
-              <input
-                id="count-input"
-                type="number"
-                placeholder="number os qu"
-                min="1"
-                max="20"
-                value={count}
-                onChange={(e) => setCount(Number(e.target.value))}
-                className="w-full border rounded-md px-3 py-2 focus:outline-none focus:ring-2"
-              />
-            </div>
-            <div className="lg:col-span-5">
-              <button
-                onClick={generateQuestions}
-                disabled={loading}
-                className="w-full bg-[#2A4759] hover:bg-[#253b49] text-white font-bold px-4 py-3 rounded-md transition duration-300 disabled:bg-gray-400 disabled:cursor-not-allowed flex items-center justify-center cursor-pointer"
-              >
-                {loading ? (
-                  <>
-                    <svg
-                      className="animate-spin -ml-1 mr-3 h-5 w-5 text-white"
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                    >
-                      <circle
-                        className="opacity-25"
-                        cx="12"
-                        cy="12"
-                        r="10"
-                        stroke="currentColor"
-                        strokeWidth="4"
-                      ></circle>
-                      <path
-                        className="opacity-75"
-                        fill="currentColor"
-                        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 
-                        3.042 1.135 5.824 3 7.938l3-2.647z"
-                      ></path>
-                    </svg>
-                    Generating...
-                  </>
-                ) : (
-                  "✨ Generate Questions"
-                )}
-              </button>
-            </div>
-          </div>
-        </div>
-
-        {/* Final Feedback */}
-        {submitted && (
-          <div className="mb-6 text-center space-y-4">
-            <h2 className="text-xl font-bold">
-              🎉 You scored{" "}
-              {
-                Object.keys(userAnswers).filter(
-                  (i) => userAnswers[i] === questions[i].answer
-                ).length
-              }{" "}
-              / {questions.length}
-            </h2>
-          </div>
-        )}
-
-        {/* Questions Section */}
-        <div className="space-y-4">
-          {questions.length === 0 && !loading && (
-            <div className="text-center text-gray-500 py-10">
-              <p className="text-xl">
-                Your generated quiz questions will appear here.
-              </p>
+          {questions.length > 0 && !submitted && (
+            <div className="text-center mb-4 text-lg font-semibold text-blue-600">
+              ⏱ Time Left: {formatTime(timeLeft)}
             </div>
           )}
-          {questions.map((q, idx) => (
-            <QuestionCard q={q} idx={idx} key={idx} />
-          ))}
-        </div>
 
-        {/* Submit / Reload Section */}
-        {questions.length > 0 && !loading && !submitted && (
-          <div className="mt-6 space-y-2">
-            {error && (
-              <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-md mb-4 text-center">
-                {error}
+          {/* Input Section */}
+          <div className="border rounded-lg p-5 mb-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4 items-end">
+              <div className="lg:col-span-2">
+                <input
+                  id="subject-input"
+                  type="text"
+                  placeholder="e.g., 'World War II' or 'React Hooks'"
+                  value={subject}
+                  onChange={(e) => setSubject(e.target.value)}
+                  className="w-full border rounded-md px-4 py-2 focus:outline-none focus:ring-2"
+                />
+              </div>
+              <div>
+                <select
+                  id="type-select"
+                  value={type}
+                  onChange={(e) => setType(e.target.value)}
+                  className="w-full border rounded-md px-4 py-2 focus:outline-none focus:ring-2"
+                >
+                  <option className="text-black" value="mcq">
+                    MCQ
+                  </option>
+                  <option className="text-black" value="truefalse">
+                    True/False
+                  </option>
+                  <option className="text-black" value="short">
+                    Short Answer
+                  </option>
+                </select>
+              </div>
+              <div>
+                <select
+                  id="difficulty-select"
+                  value={difficulty}
+                  onChange={(e) => setDifficulty(e.target.value)}
+                  className="w-full border rounded-md px-4 py-2 focus:outline-none focus:ring-2"
+                >
+                  <option className="text-black" value="easy">
+                    Easy
+                  </option>
+                  <option className="text-black" value="medium">
+                    Medium
+                  </option>
+                  <option className="text-black" value="hard">
+                    Hard
+                  </option>
+                </select>
+              </div>
+              <div>
+                <input
+                  id="count-input"
+                  type="number"
+                  placeholder="No. of Questions"
+                  min="1"
+                  max="20"
+                  value={count}
+                  onChange={(e) => setCount(Number(e.target.value))}
+                  className="w-full border rounded-md px-3 py-2 focus:outline-none focus:ring-2"
+                />
+              </div>
+              <div className="lg:col-span-5">
+                <button
+                  onClick={generateQuestions}
+                  disabled={loading}
+                  className="w-full bg-[#2A4759] hover:bg-[#253b49] text-white font-bold px-4 py-3 rounded-md transition duration-300 disabled:bg-gray-400 cursor-pointer"
+                >
+                  {loading ? "Generating..." : "✨ Generate Questions"}
+                </button>
+              </div>
+            </div>
+          </div>
+
+          {/* Result Summary */}
+          {submitted && (
+            <div className="mb-6 text-center space-y-4">
+              <h2 className="text-xl font-bold">
+                🎉 You scored{" "}
+                {
+                  Object.keys(userAnswers).filter(
+                    (i) => userAnswers[i] === questions[i].answer
+                  ).length
+                }{" "}
+                / {questions.length}
+              </h2>
+            </div>
+          )}
+
+          {/* Questions */}
+          <div className="space-y-4 mb-6">
+            {questions.length === 0 && !loading && (
+              <div className="text-center text-gray-500 py-10">
+                <p className="text-xl">
+                  Your generated quiz questions will appear here.
+                </p>
               </div>
             )}
-
-            {/* If time's up, show reload button */}
-            {timeUp ? (
-              <button
-                onClick={() => window.location.reload()}
-                className="w-full bg-green-500 hover:bg-green-600 text-white font-bold px-4 py-3 rounded-md cursor-pointer"
-              >
-                🔄 Reload Page
-              </button>
-            ) : (
-              <button
-                onClick={handleSubmit}
-                className="w-full bg-[#2A4759] hover:bg-[#253b49] text-white font-bold px-4 py-3 rounded-md cursor-pointer"
-              >
-                Submit Answers
-              </button>
-            )}
+            {questions.map((q, idx) => (
+              <QuestionCard q={q} idx={idx} key={idx} />
+            ))}
           </div>
-        )}
-      </main>
 
+          {/* Submit or Reload */}
+          {questions.length > 0 && !loading && !submitted && (
+            <div className="mt-6 space-y-2">
+              {error && (
+                <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-md mb-4 text-center">
+                  {error}
+                </div>
+              )}
+
+              {timeUp ? (
+                <button
+                  onClick={() => window.location.reload()}
+                  className="w-full bg-green-500 hover:bg-green-600 text-white font-bold px-4 py-3 rounded-md cursor-pointer"
+                >
+                  🔄 Reload Page
+                </button>
+              ) : (
+                <button
+                  onClick={handleSubmit}
+                  className="w-full bg-[#2A4759] hover:bg-[#253b49] text-white font-bold px-4 py-3 rounded-md cursor-pointer"
+                >
+                  Submit Answers
+                </button>
+              )}
+            </div>
+          )}
+        </main>
+
+        {/* 🆕 Floating Button for Drawer */}
+        <button
+          onClick={() => setDrawerOpen(true)}
+          className="fixed right-6 bottom-28 md:bottom-6 z-50 bg-[#2A4759] hover:bg-[#253b49] text-white font-bold py-3 px-5 rounded-full shadow-lg cursor-pointer"
+        >
+          📜 History
+        </button>
+
+        {/* 🆕 Drawer */}
+        {drawerOpen && (
+          <>
+            {/* Overlay (click to close) */}
+            <div
+              onClick={() => setDrawerOpen(false)}
+              className="fixed inset-0 bg-black/30 bg-opacity-30 z-40"
+            ></div>
+
+            {/* Drawer */}
+            <div
+              className="fixed top-0 right-0 w-80 h-full bg-gray-50 shadow-2xl border-l border-gray-300 z-50 p-5 overflow-y-auto"
+              onClick={(e) => e.stopPropagation()} // prevent closing when clicking inside
+            >
+              <div className="flex justify-between items-center mb-4">
+                <h2 className="text-xl font-bold text-black">Exam History</h2>
+                <button
+                  onClick={() => setDrawerOpen(false)}
+                  className="text-gray-500 hover:text-black text-lg cursor-pointer"
+                >
+                  ✖
+                </button>
+              </div>
+
+              {history.length === 0 ? (
+                <p className="text-gray-500 text-center mt-10">
+                  No exam history yet.
+                </p>
+              ) : (
+                <div className="space-y-4">
+                  {history.map((h, i) => (
+                    <div
+                      key={i}
+                      className="border rounded-lg p-4 bg-gray-50 shadow-2xl"
+                    >
+                      <p className="font-semibold text-lg text-black">
+                        {h.topic}
+                      </p>
+                      <p className="text-sm text-gray-600 capitalize">
+                        {h.type} | {h.difficulty}
+                      </p>
+                      <p className="mt-2 text-sm text-black">
+                        Questions: {h.totalQuestions}
+                      </p>
+                      <p className="text-green-600 text-sm">
+                        ✅ Correct: {h.correct}
+                      </p>
+                      <p className="text-red-600 text-sm">
+                        ❌ Wrong: {h.wrong}
+                      </p>
+                      <p className="text-gray-500 text-xs mt-2">
+                        Finished: {h.finishTime}
+                      </p>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          </>
+        )}
+      </div>
       <ThemeButton />
       <Navbar />
     </div>
