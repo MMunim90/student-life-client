@@ -75,7 +75,7 @@ const RootLayout = () => {
         {/* Page content here */}
         <Outlet></Outlet>
       </div>
-      <div className="drawer-side">
+      <div className="drawer-side z-50">
         <label
           htmlFor="my-drawer-3"
           aria-label="close sidebar"

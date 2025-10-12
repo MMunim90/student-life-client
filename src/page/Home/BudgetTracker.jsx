@@ -3,6 +3,7 @@ import ThemeButton from "../../sharedItem/ThemeButton";
 import Navbar from "../../sharedItem/Navbar";
 import useAxiosSecure from "../../hooks/useAxiosSecure";
 import useAuth from "../../hooks/useAuth";
+import Loading from "../../sharedItem/Loading"; // make sure this exists
 import {
   PieChart,
   Pie,
@@ -21,6 +22,7 @@ const BudgetTracker = () => {
   const { user } = useAuth();
   const axiosSecure = useAxiosSecure();
   const [transactions, setTransactions] = useState([]);
+  const [loading, setLoading] = useState(true); // <-- loader state
   const [formData, setFormData] = useState({
     type: "income",
     category: "",
@@ -30,10 +32,13 @@ const BudgetTracker = () => {
   // Fetch transactions from backend
   useEffect(() => {
     if (!user?.email) return;
+
+    setLoading(true); // start loading
     axiosSecure
       .get(`/transactions/${user.email}`)
       .then((res) => setTransactions(res.data))
-      .catch((err) => console.error(err));
+      .catch((err) => console.error(err))
+      .finally(() => setLoading(false)); // stop loading
   }, [user?.email, axiosSecure]);
 
   const handleChange = (e) => {
@@ -76,7 +81,6 @@ const BudgetTracker = () => {
 
   const savings = totalIncome - totalExpense;
 
-  // ----- Chart Data -----
   const expenseData = transactions
     .filter((t) => t.type === "expense")
     .map((t) => ({ name: t.category, value: t.amount }));
@@ -90,6 +94,15 @@ const BudgetTracker = () => {
       amount: t.amount,
       fill: COLORS[index % COLORS.length],
     }));
+
+  
+  if (loading) {
+    return (
+      <div>
+        <Loading />
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen mb-20 md:mb-6 mt-8 lg:mt-20">

@@ -7,6 +7,7 @@ import useAuth from "../../hooks/useAuth";
 import Lottie from "lottie-react";
 import celebrateAnimation from "../../assets/lottie/Celebration.json";
 import celebrationSound from "../../assets/sounds/celebreteSound2.mp3";
+import Loading from "../../sharedItem/Loading";
 
 const StudyPlanner = () => {
   const axiosSecure = useAxiosSecure();
@@ -28,6 +29,7 @@ const StudyPlanner = () => {
   const [editPriority, setEditPriority] = useState("Medium");
   const [editDeadline, setEditDeadline] = useState("");
   const [editHour, setEditHour] = useState("");
+  const [loading, setLoading] = useState(true);
 
   // Handle Timer Start
   const handleStartTimer = (taskId, hours) => {
@@ -67,7 +69,7 @@ const StudyPlanner = () => {
     return () => clearInterval(interval);
   }, [runningTimers]);
 
-  // Fetch tasks from backend
+  // Fetch tasks
   useEffect(() => {
     if (!user?.email) return;
 
@@ -80,13 +82,24 @@ const StudyPlanner = () => {
         setCompletedTasks(completed);
       } catch (err) {
         console.error(err);
+      } finally {
+        setLoading(false); 
       }
     };
 
     fetchTasks();
   }, [user, axiosSecure]);
 
-  // Add Task → POST
+  
+  if (loading) {
+    return (
+      <div>
+        <Loading></Loading>
+      </div>
+    );
+  }
+
+  
   const handleAddTask = async (e) => {
     e.preventDefault();
     if (!subject || !deadline) return;

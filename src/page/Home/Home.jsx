@@ -219,8 +219,8 @@ const Home = () => {
                     <div
                       className={`w-16 h-16 rounded-full p-[3px] ${
                         isActive
-                          ? "bg-gradient-to-tr from-[#93b7ce] via-[#4d728a] to-[#253b49]"
-                          : "bg-[#1e3949]"
+                          ? "bg-gradient-to-tr from-[#a4c9e0] via-[#6893af] to-[#253b49]"
+                          : "bg-[#2A4759]"
                       }`}
                     >
                       <div className="w-full h-full rounded-full border-2 border-black flex items-center justify-center bg-black">

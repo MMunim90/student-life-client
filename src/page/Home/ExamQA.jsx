@@ -1,6 +1,7 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import ThemeButton from "../../sharedItem/ThemeButton";
 import Navbar from "../../sharedItem/Navbar";
+import Swal from "sweetalert2";
 
 export default function App() {
   const [subject, setSubject] = useState("");
@@ -14,9 +15,51 @@ export default function App() {
   // Quiz state
   const [userAnswers, setUserAnswers] = useState({});
   const [submitted, setSubmitted] = useState(false);
-  const [feedback, setFeedback] = useState({}); // AI feedback per question
+  const [feedback, setFeedback] = useState({});
+  const [timeLeft, setTimeLeft] = useState(null);
+  const [timeUp, setTimeUp] = useState(false);
 
-  // Create a prompt for Gemini API
+  // Timer useEffect
+  useEffect(() => {
+    if (questions.length === 0) return;
+
+    setTimeLeft(questions.length * 60);
+
+    const timer = setInterval(() => {
+      setTimeLeft((prev) => {
+        if (prev <= 1) {
+          clearInterval(timer);
+          setTimeUp(true); // mark time up
+
+          const allAnswered =
+            Object.keys(userAnswers).length === questions.length;
+          if (!submitted) {
+            if (!allAnswered) {
+              Swal.fire({
+                icon: "error",
+                title: "⏰ Time's up!",
+                text: "Reload Page to Generate New Questions",
+              });
+            } else {
+              handleSubmit(true);
+            }
+          }
+
+          return 0;
+        }
+        return prev - 1;
+      });
+    }, 1000);
+
+    return () => clearInterval(timer);
+  }, [questions, userAnswers]);
+
+  const formatTime = (seconds) => {
+    const m = Math.floor(seconds / 60);
+    const s = seconds % 60;
+    return `${m.toString().padStart(2, "0")}:${s.toString().padStart(2, "0")}`;
+  };
+
   const generatePrompt = () => {
     let questionTypeDetails = "";
     switch (type) {
@@ -158,25 +201,29 @@ export default function App() {
     }
   };
 
-  // Handle submission
+  // Updated handleSubmit
   const handleSubmit = async () => {
-    if (Object.keys(userAnswers).length < questions.length) {
+    const allAnswered = Object.keys(userAnswers).length === questions.length;
+
+    if (!allAnswered) {
       setError("Please answer all questions before submitting.");
       return;
     }
+
     setError(null);
     setSubmitted(true);
 
-    // Fetch AI feedback for all questions
     for (let i = 0; i < questions.length; i++) {
       await getFeedback(i, questions[i], userAnswers[i]);
     }
   };
 
   // Question Card
-const QuestionCard = ({ q, idx }) => {
-  const userAnswer = userAnswers[idx];
-  const isCorrect = submitted && userAnswer === q.answer;
+  const QuestionCard = ({ q, idx }) => {
+    const userAnswer = userAnswers[idx];
+    const isCorrect = submitted && userAnswer === q.answer;
+
+    const disableClick = submitted || timeUp;
 
     return (
       <div className="border shadow-md rounded-lg p-5 border-l-4">
@@ -188,13 +235,12 @@ const QuestionCard = ({ q, idx }) => {
           <ul className="space-y-2 mb-3">
             {q.options.map((opt, i) => {
               const isSelected = userAnswer === opt;
-              const showCorrect =
-                submitted && q.answer === opt && !isSelected;
+              const showCorrect = submitted && q.answer === opt && !isSelected;
 
               return (
                 <li
                   key={i}
-                  onClick={() => handleSelect(idx, opt)}
+                  onClick={() => !disableClick && handleSelect(idx, opt)}
                   className={`px-3 py-2 border rounded-md cursor-pointer ${
                     isSelected ? "bg-blue-100 border-blue-500 text-black" : ""
                   } ${
@@ -207,6 +253,8 @@ const QuestionCard = ({ q, idx }) => {
                         ? "border-green-500 bg-green-50 text-black"
                         : ""
                       : ""
+                  } ${
+                    timeUp && !submitted ? "opacity-50 pointer-events-none" : ""
                   }`}
                 >
                   {opt}
@@ -249,6 +297,13 @@ const QuestionCard = ({ q, idx }) => {
           </p>
         </header>
 
+        {/* Timer Display */}
+        {questions.length > 0 && !submitted && (
+          <div className="text-center mb-4 text-lg font-semibold text-blue-600">
+            ⏱ Time Left: {formatTime(timeLeft)}
+          </div>
+        )}
+
         {/* Input Section */}
         <div className="border rounded-lg p-5 mb-6">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4 items-end">
@@ -269,9 +324,15 @@ const QuestionCard = ({ q, idx }) => {
                 onChange={(e) => setType(e.target.value)}
                 className="w-full border rounded-md px-4 py-2 focus:outline-none focus:ring-2"
               >
-                <option className="text-black" value="mcq">MCQ</option>
-                <option className="text-black" value="truefalse">True/False</option>
-                <option className="text-black" value="short">Short Answer</option>
+                <option className="text-black" value="mcq">
+                  MCQ
+                </option>
+                <option className="text-black" value="truefalse">
+                  True/False
+                </option>
+                <option className="text-black" value="short">
+                  Short Answer
+                </option>
               </select>
             </div>
             <div>
@@ -281,9 +342,15 @@ const QuestionCard = ({ q, idx }) => {
                 onChange={(e) => setDifficulty(e.target.value)}
                 className="w-full border rounded-md px-4 py-2 focus:outline-none focus:ring-2"
               >
-                <option className="text-black" value="easy">Easy</option>
-                <option className="text-black" value="medium">Medium</option>
-                <option className="text-black" value="hard">Hard</option>
+                <option className="text-black" value="easy">
+                  Easy
+                </option>
+                <option className="text-black" value="medium">
+                  Medium
+                </option>
+                <option className="text-black" value="hard">
+                  Hard
+                </option>
               </select>
             </div>
             <div>
@@ -337,13 +404,6 @@ const QuestionCard = ({ q, idx }) => {
           </div>
         </div>
 
-        {/* Error Message */}
-        {error && (
-          <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-md mb-6">
-            {error}
-          </div>
-        )}
-
         {/* Final Feedback */}
         {submitted && (
           <div className="mb-6 text-center space-y-4">
@@ -373,14 +433,32 @@ const QuestionCard = ({ q, idx }) => {
           ))}
         </div>
 
-        {/* Submit Button */}
+        {/* Submit / Reload Section */}
         {questions.length > 0 && !loading && !submitted && (
-          <button
-            onClick={handleSubmit}
-            className="mt-6 w-full bg-[#2A4759] hover:bg-[#253b49] text-white font-bold px-4 py-3 rounded-md cursor-pointer"
-          >
-            Submit Answers
-          </button>
+          <div className="mt-6 space-y-2">
+            {error && (
+              <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-md mb-4 text-center">
+                {error}
+              </div>
+            )}
+
+            {/* If time's up, show reload button */}
+            {timeUp ? (
+              <button
+                onClick={() => window.location.reload()}
+                className="w-full bg-green-500 hover:bg-green-600 text-white font-bold px-4 py-3 rounded-md cursor-pointer"
+              >
+                🔄 Reload Page
+              </button>
+            ) : (
+              <button
+                onClick={handleSubmit}
+                className="w-full bg-[#2A4759] hover:bg-[#253b49] text-white font-bold px-4 py-3 rounded-md cursor-pointer"
+              >
+                Submit Answers
+              </button>
+            )}
+          </div>
         )}
       </main>
 

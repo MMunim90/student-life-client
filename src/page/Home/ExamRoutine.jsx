@@ -5,6 +5,7 @@ import useAuth from "../../hooks/useAuth";
 import useAxiosSecure from "../../hooks/useAxiosSecure";
 import { useReactToPrint } from "react-to-print";
 import { IoPrint } from "react-icons/io5";
+import Loading from "../../sharedItem/Loading";
 
 const ExamRoutine = () => {
   const { user } = useAuth();
@@ -21,30 +22,34 @@ const ExamRoutine = () => {
     roomNumber: "",
   });
   const [editId, setEditId] = useState(null);
+  const [loading, setLoading] = useState(true); // Initially true
 
   const componentRef = useRef(null);
+
+  // Print handler
   const handlePrint = useReactToPrint({
     content: () => componentRef.current,
     documentTitle: "Exam Routine",
+    onAfterPrint: () => alert("Print completed"),
   });
 
-  // Fetch routines and separate pending/completed
+  // Fetch routines
   const fetchRoutines = async () => {
+    setLoading(true);
     try {
       const res = await axiosSecure.get(`/exam-routines?email=${user?.email}`);
       const allRoutines = res.data;
-
       setRoutines(allRoutines.filter((r) => r.status !== "completed"));
       setCompletedRoutines(allRoutines.filter((r) => r.status === "completed"));
     } catch (error) {
       console.error("Failed to fetch routines", error);
+    } finally {
+      setLoading(false);
     }
   };
 
   useEffect(() => {
-    if (user?.email) {
-      fetchRoutines();
-    }
+    if (user?.email) fetchRoutines();
   }, [user?.email]);
 
   // Form input
@@ -54,6 +59,7 @@ const ExamRoutine = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
     try {
       if (editId) {
         await axiosSecure.patch(`/exam-routines/${editId}`, {
@@ -76,13 +82,13 @@ const ExamRoutine = () => {
         roomNumber: "",
       });
       setEditId(null);
-      fetchRoutines();
+      await fetchRoutines();
     } catch (error) {
       console.error("Error saving routine", error);
+      setLoading(false);
     }
   };
 
-  // Edit/Delete/Mark done
   const handleEdit = (routine) => {
     setFormData({
       courseName: routine.courseName,
@@ -96,28 +102,41 @@ const ExamRoutine = () => {
   };
 
   const handleDelete = async (id) => {
+    setLoading(true);
     try {
       await axiosSecure.delete(`/exam-routines/${id}`, {
         params: { email: user?.email },
       });
-      fetchRoutines();
+      await fetchRoutines();
     } catch (error) {
       console.error("Failed to delete routine", error);
+      setLoading(false);
     }
   };
 
   const handleMarkDone = async (routine) => {
+    setLoading(true);
     try {
       await axiosSecure.patch(`/exam-routines/${routine._id}`, {
         ...routine,
         email: user?.email,
         status: "completed",
       });
-      fetchRoutines();
+      await fetchRoutines();
     } catch (error) {
       console.error("Failed to mark exam as done", error);
+      setLoading(false);
     }
   };
+
+  // Show full-page loader while fetching data
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center min-h-screen">
+        <Loading />
+      </div>
+    );
+  }
 
   return (
     <div className="w-11/12 mx-auto min-h-screen mb-28 md:mb-6 mt-8 lg:mt-20">
@@ -190,7 +209,7 @@ const ExamRoutine = () => {
         </button>
       </form>
 
-      {/* Tables + Print */}
+      {/* Printable Area */}
       <div className="overflow-x-auto">
         <div className="flex justify-between mb-4 items-center">
           <h1 className="mb-2 text-2xl">⏳ Upcoming Exams</h1>
@@ -202,10 +221,9 @@ const ExamRoutine = () => {
           </button>
         </div>
 
-        {/* Printable Area */}
         <div ref={componentRef}>
-          {/* Upcoming Exams */}
-          <table className="w-full border-collapse border rounded-xl shadow">
+          {/* Upcoming Exams Table */}
+          <table className="w-full border-collapse border rounded-xl shadow mb-10">
             <thead>
               <tr className="bg-gray-400 text-left">
                 <th className="p-3 border">Course Name</th>
@@ -259,51 +277,49 @@ const ExamRoutine = () => {
             </tbody>
           </table>
 
-          {/* Completed Exams */}
-          <div className="overflow-x-auto mt-10">
-            <h1 className="mb-2 text-2xl">✅ Completed Exams</h1>
-            <table className="w-full border-collapse border rounded-xl shadow">
-              <thead>
-                <tr className="bg-gray-400 text-left">
-                  <th className="p-3 border">Course Name</th>
-                  <th className="p-3 border">Course Code</th>
-                  <th className="p-3 border">Exam Date</th>
-                  <th className="p-3 border">Exam Time</th>
-                  <th className="p-3 border">Building</th>
-                  <th className="p-3 border">Room Number</th>
-                  <th className="p-3 border text-center">Actions</th>
+          {/* Completed Exams Table */}
+          <h1 className="mb-2 text-2xl">✅ Completed Exams</h1>
+          <table className="w-full border-collapse border rounded-xl shadow mb-10">
+            <thead>
+              <tr className="bg-gray-400 text-left">
+                <th className="p-3 border">Course Name</th>
+                <th className="p-3 border">Course Code</th>
+                <th className="p-3 border">Exam Date</th>
+                <th className="p-3 border">Exam Time</th>
+                <th className="p-3 border">Building</th>
+                <th className="p-3 border">Room Number</th>
+                <th className="p-3 border text-center">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {completedRoutines.length === 0 ? (
+                <tr>
+                  <td colSpan="7" className="p-4 text-center text-gray-500">
+                    No completed exams
+                  </td>
                 </tr>
-              </thead>
-              <tbody>
-                {completedRoutines.length === 0 ? (
-                  <tr>
-                    <td colSpan="7" className="p-4 text-center text-gray-500">
-                      No completed exams
+              ) : (
+                completedRoutines.map((routine) => (
+                  <tr key={routine._id} className="hover:bg-gray-50 hover:text-black">
+                    <td className="p-3 border">{routine.courseName}</td>
+                    <td className="p-3 border">{routine.courseCode}</td>
+                    <td className="p-3 border">{routine.examDate}</td>
+                    <td className="p-3 border">{routine.examTime}</td>
+                    <td className="p-3 border">{routine.building}</td>
+                    <td className="p-3 border">{routine.roomNumber}</td>
+                    <td className="p-3 border text-center">
+                      <button
+                        onClick={() => handleDelete(routine._id)}
+                        className="bg-red-500 text-white px-3 py-1 rounded-lg hover:bg-red-600 transition cursor-pointer"
+                      >
+                        Delete
+                      </button>
                     </td>
                   </tr>
-                ) : (
-                  completedRoutines.map((routine) => (
-                    <tr key={routine._id} className="hover:bg-gray-50 hover:text-black">
-                      <td className="p-3 border">{routine.courseName}</td>
-                      <td className="p-3 border">{routine.courseCode}</td>
-                      <td className="p-3 border">{routine.examDate}</td>
-                      <td className="p-3 border">{routine.examTime}</td>
-                      <td className="p-3 border">{routine.building}</td>
-                      <td className="p-3 border">{routine.roomNumber}</td>
-                      <td className="p-3 border text-center">
-                        <button
-                          onClick={() => handleDelete(routine._id)}
-                          className="bg-red-500 text-white px-3 py-1 rounded-lg hover:bg-red-600 transition cursor-pointer"
-                        >
-                          Delete
-                        </button>
-                      </td>
-                    </tr>
-                  ))
-                )}
-              </tbody>
-            </table>
-          </div>
+                ))
+              )}
+            </tbody>
+          </table>
         </div>
       </div>
 

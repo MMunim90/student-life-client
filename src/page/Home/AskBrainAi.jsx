@@ -1,49 +1,100 @@
-import React, { useState } from "react";
-import { ArrowUp } from "lucide-react";
+import React, { useState, useEffect, useRef } from "react";
+import {
+  ArrowUp,
+  Clock,
+  Trash2,
+  Menu,
+  Plus,
+  ChevronsLeft,
+  ChevronsRight,
+} from "lucide-react";
 import ThemeButton from "../../sharedItem/ThemeButton";
 import Navbar from "../../sharedItem/Navbar";
 import Lottie from "lottie-react";
 import LoadingLottie from "../../assets/lottie/loading.json";
+import { IoMdCopy } from "react-icons/io";
 
 const AskBrainAi = () => {
   const [prompt, setPrompt] = useState("");
-  const [response, setResponse] = useState("");
+  const [chat, setChat] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [history, setHistory] = useState([]);
+  const [showSidebar, setShowSidebar] = useState(true); // default true on large screens
+  const chatEndRef = useRef(null);
+
+  const STORAGE_KEY = "brain_ai_history";
+  const EXPIRY_DAYS = 7;
+
+  const scrollToBottom = () => {
+    chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
+
+  useEffect(() => {
+    scrollToBottom();
+  }, [chat, loading]);
+
+  // Load history from localStorage
+  useEffect(() => {
+    const saved = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
+    const now = Date.now();
+    const valid = saved.filter(
+      (item) => now - item.timestamp < EXPIRY_DAYS * 24 * 60 * 60 * 1000
+    );
+    if (valid.length !== saved.length) {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(valid));
+    }
+    setHistory(valid);
+  }, []);
+
+  const saveHistory = (newItem) => {
+    const updated = [newItem, ...history].slice(0, 10);
+    setHistory(updated);
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(updated));
+  };
 
   const handleGenerate = async () => {
     if (!prompt.trim()) {
       setError("Please enter a prompt.");
       return;
     }
-
     setLoading(true);
     setError(null);
-    setResponse("");
+
+    const currentPrompt = prompt;
+    setPrompt("");
+    setChat((prev) => [...prev, { sender: "user", text: currentPrompt }]);
 
     try {
       const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
       const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${apiKey}`;
 
-      const payload = {
-        contents: [{ parts: [{ text: prompt }] }],
-      };
-
+      const payload = { contents: [{ parts: [{ text: currentPrompt }] }] };
       const res = await fetch(apiUrl, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
       });
 
-      if (!res.ok) {
-        throw new Error(`API error: ${res.statusText}`);
-      }
+      if (!res.ok) throw new Error(`API error: ${res.statusText}`);
 
       const data = await res.json();
       const generatedText =
         data.candidates?.[0]?.content?.parts?.[0]?.text || "";
+      const plainText = generatedText
+        .replace(/\*\*(.*?)\*\*/g, "$1")
+        .replace(/\*(.*?)\*/g, "$1")
+        .replace(/__(.*?)__/g, "$1")
+        .replace(/_(.*?)_/g, "$1");
 
-      setResponse(generatedText);
+      setChat((prev) => [...prev, { sender: "ai", text: plainText }]);
+
+      saveHistory({
+        id: Date.now(),
+        question: currentPrompt,
+        answer: plainText,
+        timestamp: Date.now(),
+      });
     } catch (err) {
       console.error("Error generating response:", err);
       setError("Failed to generate a response. Check console for details.");
@@ -52,69 +103,197 @@ const AskBrainAi = () => {
     }
   };
 
-  return (
-    <div className="w-11/12 mx-auto mb-28 md:mb-6">
-      <div className="min-h-screen flex flex-col items-center justify-start relative pt-24 md:pt-28">
-        {/* Logo */}
-        <h1 className="top-6 left-2 absolute text-3xl font-semibold">
-          ✨ Brain AI
-        </h1>
+  const loadFromHistory = (item) => {
+    setChat((prev) => [...prev, { sender: "user", text: item.question }]);
+    setChat((prev) => [...prev, { sender: "ai", text: item.answer }]);
+    setPrompt("");
+  };
 
-        <div className="flex flex-col items-center text-center max-w-3xl px-4 w-full">
-          {/* Greeting */}
-          {!response && (
-            <>
-              <h1 className="text-4xl md:text-5xl font-semibold tracking-tight">
-                <span>Hello,</span>{" "}
-                <span className="text-emerald-400">Boss.</span>
-              </h1>
-              <p className="text-gray-500 mt-2 text-xl md:text-2xl">
-                How can I help you today?
-              </p>
-            </>
+  const clearHistory = () => {
+    setHistory([]);
+    localStorage.removeItem(STORAGE_KEY);
+  };
+
+  const startNewChat = () => {
+    setChat([]);
+    setPrompt("");
+  };
+
+  return (
+    <div>
+      <div className="relative flex w-full min-h-screen">
+        {/* Sidebar */}
+        <div
+          className={`min-h-screen fixed lg:static top-0 left-0 h-full w-72 border-r border-gray-400 bg-[#1e293b] lg:bg-transparent text-white transform transition-transform duration-300 z-40 lg:z-20
+          ${
+            showSidebar
+              ? "translate-x-0"
+              : "-translate-x-full lg:-translate-x-64"
+          }`}
+        >
+          {/* Sidebar Header */}
+          <div className="flex items-center justify-between px-4 py-8 border-b border-gray-700">
+            <h2 className="text-lg font-semibold flex items-center gap-2 text-gray-400">
+              <Clock size={18} /> History
+            </h2>
+            <button
+              className="lg:hidden text-2xl hover:text-gray-200"
+              onClick={() => setShowSidebar(false)}
+            >
+              ✖
+            </button>
+          </div>
+
+          {/* New Chat */}
+          <div className="px-4 py-3 border-b border-gray-700">
+            <button
+              onClick={startNewChat}
+              className="flex items-center gap-2 w-full text-sm bg-emerald-500 hover:bg-emerald-600 text-white px-3 py-2 rounded-md cursor-pointer"
+            >
+              <Plus size={16} /> New Chat
+            </button>
+          </div>
+
+          {/* History List */}
+          <div className="p-4 overflow-y-auto h-[calc(100%-160px)]">
+            {history.length === 0 ? (
+              <p className="text-sm text-gray-400">No history yet</p>
+            ) : (
+              <ul className="space-y-2">
+                {history.map((item) => (
+                  <li
+                    key={item.id}
+                    className="bg-[#2A4759] hover:bg-[#223646] p-3 rounded-md cursor-pointer text-sm truncate"
+                    onClick={() => loadFromHistory(item)}
+                    title={item.question}
+                  >
+                    {item.question}
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
+
+          {history.length > 0 && showSidebar && (
+            <button
+              className="fixed bottom-4 text-gray-400 hover:text-gray-500 mt-20 px-4 py-2 z-50 w-full flex gap-3 items-center justify-center cursor-pointer"
+              onClick={clearHistory}
+            >
+              <Trash2 size={16} /> Clear History
+            </button>
           )}
 
-          {/* API Response */}
-          <div className="mt-6 w-full max-w-5xl h-96 overflow-y-auto rounded-md p-4">
-            {error && <p className="text-red-500 text-sm mb-2">{error}</p>}
+          {/* Collapse Button */}
+          <button
+            className="absolute top-1/2 right-[-36px] lg:right-[-20px] transform -translate-y-1/2 bg-gray-700 p-2 rounded-r-md hover:bg-gray-600 cursor-pointer"
+            onClick={() => setShowSidebar(!showSidebar)}
+          >
+            {showSidebar ? (
+              <ChevronsLeft size={20} />
+            ) : (
+              <ChevronsRight size={20} />
+            )}
+          </button>
+        </div>
 
-            {loading ? (
-              <div className="flex justify-center items-center h-full">
-                <Lottie animationData={LoadingLottie} loop={true} />
+        {/* Overlay for small screens */}
+        {showSidebar && (
+          <div
+            className="fixed inset-0 bg-black/50 lg:hidden z-30"
+            onClick={() => setShowSidebar(false)}
+          ></div>
+        )}
+
+        {/* Main Content */}
+        <div className="flex-1 w-full lg:ml-0">
+          <div className="w-11/12 mx-auto mb-28 lg:mb-6">
+            <div className="min-h-screen flex flex-col items-center justify-start relative pt-24 lg:pt-28">
+              <div className="flex flex-col items-center text-center max-w-3xl px-4 w-full">
+                {!chat.length && (
+                  <>
+                    <h1 className="mb-4 text-3xl font-semibold">✨ Brain AI</h1>
+                    <h1 className="text-4xl md:text-5xl font-semibold tracking-tight">
+                      Hello, <span className="text-emerald-400">Boss...</span>
+                    </h1>
+                    <p className="text-gray-500 mt-2 text-xl md:text-2xl">
+                      How can I help you today?
+                    </p>
+                  </>
+                )}
+
+                {/* Chat Area */}
+                <div className="mt-6 w-full max-w-5xl h-96 overflow-y-auto rounded-md p-4 bg-transparent space-y-4">
+                  {chat.map((msg, i) => (
+                    <div
+                      key={i}
+                      className={`flex flex-col ${
+                        msg.sender === "user" ? "items-end" : "items-start"
+                      }`}
+                    >
+                      <div
+                        className={`px-4 py-2 rounded-2xl max-w-[80%] text-sm ${
+                          msg.sender === "user"
+                            ? "bg-emerald-500 text-white rounded-br-none"
+                            : "bg-gray-200 dark:bg-gray-800 dark:text-gray-100 rounded-bl-none"
+                        }`}
+                      >
+                        {msg.text}
+                      </div>
+
+                      {/* Copy Button Below Message */}
+                      <button
+                        onClick={() => navigator.clipboard.writeText(msg.text)}
+                        className="mt-1 text-gray-500 hover:text-gray-700 dark:hover:text-gray-200 text-lg cursor-pointer"
+                        title="Copy"
+                      >
+                        <IoMdCopy size={22}/>
+                      </button>
+                    </div>
+                  ))}
+
+                  {loading && (
+                    <div className="flex justify-center items-center h-20">
+                      <Lottie animationData={LoadingLottie} loop={true} />
+                    </div>
+                  )}
+                  <div ref={chatEndRef} />
+                </div>
+
+                {/* Prompt Box */}
+                <div className="mt-16 w-full max-w-2xl">
+                  <div className="flex items-center border rounded-full shadow-sm px-4 py-3">
+                    <input
+                      type="text"
+                      placeholder="Ask anything"
+                      className="flex-1 bg-transparent outline-none placeholder-gray-400"
+                      value={prompt}
+                      onChange={(e) => setPrompt(e.target.value)}
+                      onKeyDown={(e) => e.key === "Enter" && handleGenerate()}
+                      disabled={loading}
+                    />
+                    <button
+                      className={`p-2 md:p-3 rounded-full ${
+                        loading
+                          ? "bg-gray-400 cursor-not-allowed"
+                          : "bg-[#2A4759] hover:bg-[#253b49]"
+                      } text-white transition`}
+                      onClick={handleGenerate}
+                      disabled={loading}
+                    >
+                      <ArrowUp size={20} />
+                    </button>
+                  </div>
+                </div>
+
+                <p className="text-xs text-gray-400 mt-4 px-4 max-w-xl leading-relaxed">
+                  Brain AI may display inaccurate info, including about people,
+                  so double-check its responses. Your privacy and Brain AI Apps.
+                </p>
               </div>
-            ) : response && (
-              <div className="whitespace-pre-wrap text-left">{response}</div>
-            ) }
-          </div>
-
-          {/* Prompt Box */}
-          <div className="mt-16 w-full max-w-2xl">
-            <div className="flex items-center border rounded-full shadow-sm px-4 py-3">
-              <input
-                type="text"
-                placeholder="Enter a prompt here"
-                className="flex-1 bg-transparent outline-none placeholder-gray-400"
-                value={prompt}
-                onChange={(e) => setPrompt(e.target.value)}
-                onKeyDown={(e) => e.key === "Enter" && handleGenerate()}
-              />
-              <button
-                className="p-2 md:p-3 rounded-full bg-[#2A4759] text-white hover:bg-[#253b49] transition cursor-pointer"
-                onClick={handleGenerate}
-              >
-                <ArrowUp size={20} />
-              </button>
             </div>
           </div>
-
-          {/* Footer Note */}
-          <p className="text-xs text-gray-400 mt-4 px-4 max-w-xl leading-relaxed">
-            Brain AI may display inaccurate info, including about people, so
-            double-check its responses. Your privacy and Brain AI Apps.
-          </p>
         </div>
       </div>
-
       <Navbar />
       <ThemeButton />
     </div>

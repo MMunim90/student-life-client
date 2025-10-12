@@ -7,6 +7,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import useAxiosSecure from "../../hooks/useAxiosSecure";
 import useAuth from "../../hooks/useAuth";
 import Swal from "sweetalert2";
+import Loading from "../../sharedItem/Loading";
 
 const days = [
   "Sunday",
@@ -37,7 +38,7 @@ const ClassSchedule = () => {
   const [editData, setEditData] = useState(null);
 
   // GET schedules for the logged-in user
-  const { data: schedules = [] } = useQuery({
+  const { data: schedules = [], isLoading } = useQuery({
     queryKey: ["schedules", user.email],
     queryFn: async () =>
       (await axiosSecure.get(`/schedules?email=${user.email}`)).data,
@@ -155,6 +156,14 @@ const ClassSchedule = () => {
   const today = days[new Date().getDay()];
   const todayClasses = schedules.filter((cls) => cls.day === today);
 
+  if (isLoading) {
+    return (
+      <div>
+        <Loading />
+      </div>
+    );
+  }
+
   return (
     <div className="py-24 w-11/12 mx-auto mb-8">
       {/* Header */}
@@ -242,7 +251,9 @@ const ClassSchedule = () => {
 
       {/* Today's Class Section */}
       <div className="mb-10">
-        <h3 className="text-xl font-bold mb-4">📌 Today's Classes Schedule for {today}</h3>
+        <h3 className="text-xl font-bold mb-4">
+          📌 Today's Classes Schedule for {today}
+        </h3>
         {todayClasses.length === 0 ? (
           <p className="text-gray-500">No Class For Today</p>
         ) : (
@@ -358,7 +369,9 @@ const ClassSchedule = () => {
               className="border rounded px-3 py-2 mb-2 w-full"
             >
               {days.map((d) => (
-                <option className="text-black" key={d}>{d}</option>
+                <option className="text-black" key={d}>
+                  {d}
+                </option>
               ))}
             </select>
             <input
