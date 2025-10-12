@@ -138,7 +138,7 @@ const RootLayout = () => {
                       }`
                     }
                   >
-                    <GrSchedules /> Class schedule
+                    <GrSchedules /> Class Schedule
                   </NavLink>
                 </li>
                 <li>
@@ -152,7 +152,7 @@ const RootLayout = () => {
                       }`
                     }
                   >
-                    <GiMoneyStack /> Budget tracker
+                    <GiMoneyStack /> Budget Tracker
                   </NavLink>
                 </li>
                 <li>
@@ -180,7 +180,7 @@ const RootLayout = () => {
                       }`
                     }
                   >
-                    <PiStudentBold /> Study planner
+                    <PiStudentBold /> Study Planner
                   </NavLink>
                 </li>
                 <li>

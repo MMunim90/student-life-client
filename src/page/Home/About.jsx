@@ -4,6 +4,7 @@ import { ImMail2 } from "react-icons/im";
 import { BsWhatsapp } from "react-icons/bs";
 import founder from "../../assets/founder.png";
 import Navbar from "../../sharedItem/Navbar";
+import { Link } from "react-router";
 
 const classes = {
   section: "w-full max-w-6xl mx-auto px-4 sm:px-6 lg:px-8",
@@ -151,35 +152,16 @@ const About = () => {
         </div>
       </section>
 
-      {/* Sponsors Section */}
+      {/* Website update history Section */}
       <section className="py-12 sm:py-16">
-        <div className={classes.section}>
-          <h2 className="text-center mb-10 text-3xl sm:text-4xl font-bold tracking-tight">
-            Sponsors
+        <div data-aos="zoom-in" data-aos-duration="2000" className={classes.section}>
+          <h2 className="text-center mb-4 text-3xl sm:text-4xl font-bold tracking-tight">
+            Update History
           </h2>
-          <p className="text-center text-2xl">No Sponsors Found!</p>
-          {/* <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-8 items-center">
-            <img
-              src="/images/sponsor1.png"
-              alt="Sponsor 1"
-              className="max-h-16 mx-auto"
-            />
-            <img
-              src="/images/sponsor2.png"
-              alt="Sponsor 2"
-              className="max-h-16 mx-auto"
-            />
-            <img
-              src="/images/sponsor3.png"
-              alt="Sponsor 3"
-              className="max-h-16 mx-auto"
-            />
-            <img
-              src="/images/sponsor4.png"
-              alt="Sponsor 4"
-              className="max-h-16 mx-auto"
-            />
-          </div> */}
+          <h3 className="text-center text-sm mb-10">Last Update - 12/10/2025, 08:00 am</h3>
+          <p className="text-center text-lg">* Added History Feature on <Link className="text-blue-500 hover:underline" to="/app/askAi">Ask Brain AI</Link> Page</p>
+          <p className="text-center text-lg">* Added loading before data fetching on <Link className="text-blue-500 hover:underline" to="/app/class">Class Schedule</Link>, <Link className="text-blue-500 hover:underline" to="/app/budget">Budget Tracker</Link>, <Link className="text-blue-500 hover:underline" to="/app/study">Study Planner</Link> and <Link className="text-blue-500 hover:underline" to="/app/exRoutine">Exam Routine</Link> page</p>
+          <p className="text-center text-lg">* Added Timer Feature and Fixes Bug on <Link className="text-blue-500 hover:underline" to="/app/exam">Exam Q&A</Link> page</p>
         </div>
       </section>
 
