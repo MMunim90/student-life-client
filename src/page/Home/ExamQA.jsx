@@ -117,7 +117,7 @@ export default function App() {
     setTimeUp(false);
 
     const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
-    const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${apiKey}`;
+    const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`;
 
     const questionSchema = {
       type: "OBJECT",
@@ -178,7 +178,7 @@ export default function App() {
 
   const getFeedback = async (qIndex, q, userAnswer) => {
     const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
-    const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${apiKey}`;
+    const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`;
 
     const prompt = `
       The question was: "${q.question}".
