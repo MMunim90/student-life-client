@@ -99,10 +99,11 @@ export default function App() {
   };
 
   const generateQuestions = async () => {
-    if (!subject) {
+    if (!subject?.trim()) {
       setError("Please enter a subject or topic.");
       return;
     }
+
     if (count <= 0) {
       setError("Please enter a valid number of questions.");
       return;
@@ -117,20 +118,39 @@ export default function App() {
     setTimeUp(false);
 
     const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
-    const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`;
+
+    const apiUrl =
+      "https://generativelanguage.googleapis.com/v1beta/models/gemini-3.8-flash:generateContent";
 
     const questionSchema = {
       type: "OBJECT",
       properties: {
-        question: { type: "STRING" },
-        options: { type: "ARRAY", items: { type: "STRING" } },
-        answer: { type: "STRING" },
+        question: {
+          type: "STRING",
+        },
+        options: {
+          type: "ARRAY",
+          items: {
+            type: "STRING",
+          },
+        },
+        answer: {
+          type: "STRING",
+        },
       },
-      required: ["question", "answer"],
+      required: ["question", "options", "answer"],
     };
 
     const payload = {
-      contents: [{ parts: [{ text: generatePrompt() }] }],
+      contents: [
+        {
+          parts: [
+            {
+              text: generatePrompt(),
+            },
+          ],
+        },
+      ],
       generationConfig: {
         responseMimeType: "application/json",
         responseSchema: {
@@ -143,27 +163,44 @@ export default function App() {
     try {
       const response = await fetch(apiUrl, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          "x-goog-api-key": apiKey,
+        },
         body: JSON.stringify(payload),
       });
 
+      const result = await response.json();
+
       if (!response.ok) {
-        throw new Error(`API error: ${response.statusText}`);
+        console.error("Gemini API Error:", result);
+
+        throw new Error(
+          result?.error?.message ||
+            `API error: ${response.status} ${response.statusText}`,
+        );
       }
 
-      const result = await response.json();
       const generatedText = result.candidates?.[0]?.content?.parts?.[0]?.text;
 
-      if (generatedText) {
-        const parsedQuestions = JSON.parse(generatedText);
-        setQuestions(parsedQuestions);
-      } else {
+      if (!generatedText) {
+        console.error("Unexpected Gemini response:", result);
         throw new Error("No content received from the API.");
       }
+
+      const parsedQuestions = JSON.parse(generatedText);
+
+      if (!Array.isArray(parsedQuestions)) {
+        throw new Error("Invalid question format received from the API.");
+      }
+
+      setQuestions(parsedQuestions);
     } catch (err) {
       console.error("Error generating questions:", err);
+
       setError(
-        "Failed to generate questions. Please check the console for details."
+        err.message ||
+          "Failed to generate questions. Please check the console for details.",
       );
     } finally {
       setLoading(false);
@@ -178,30 +215,70 @@ export default function App() {
 
   const getFeedback = async (qIndex, q, userAnswer) => {
     const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
-    const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`;
+
+    const apiUrl =
+      "https://generativelanguage.googleapis.com/v1beta/models/gemini-3.8-flash:generateContent";
 
     const prompt = `
-      The question was: "${q.question}".
-      The correct answer is: "${q.answer}".
-      The student answered: "${userAnswer}".
-      Give short feedback (1-2 sentences).
-    `;
+The question was: "${q.question}".
+The correct answer is: "${q.answer}".
+The student answered: "${userAnswer}".
+
+Give short feedback in 1-2 sentences.
+Explain briefly whether the student's answer is correct or incorrect.
+If incorrect, briefly mention the correct answer.
+`;
 
     const payload = {
-      contents: [{ parts: [{ text: prompt }] }],
+      contents: [
+        {
+          parts: [
+            {
+              text: prompt,
+            },
+          ],
+        },
+      ],
     };
 
     try {
       const response = await fetch(apiUrl, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          "x-goog-api-key": apiKey,
+        },
         body: JSON.stringify(payload),
       });
+
       const result = await response.json();
+
+      if (!response.ok) {
+        console.error("Gemini API Error:", result);
+
+        throw new Error(
+          result?.error?.message ||
+            `API error: ${response.status} ${response.statusText}`,
+        );
+      }
+
       const text = result.candidates?.[0]?.content?.parts?.[0]?.text || "";
-      setFeedback((prev) => ({ ...prev, [qIndex]: text }));
+
+      if (!text) {
+        throw new Error("No feedback received from Gemini.");
+      }
+
+      setFeedback((prev) => ({
+        ...prev,
+        [qIndex]: text,
+      }));
     } catch (err) {
       console.error("Error fetching feedback:", err);
+
+      setFeedback((prev) => ({
+        ...prev,
+        [qIndex]: "Unable to generate feedback at this time.",
+      }));
     }
   };
 
@@ -265,10 +342,10 @@ export default function App() {
                       ? isCorrect && isSelected
                         ? "bg-green-100 border-green-500"
                         : isSelected
-                        ? "border-red-500 bg-red-100"
-                        : showCorrect
-                        ? "border-green-500 bg-green-50 text-black"
-                        : ""
+                          ? "border-red-500 bg-red-100"
+                          : showCorrect
+                            ? "border-green-500 bg-green-50 text-black"
+                            : ""
                       : ""
                   } ${
                     timeUp && !submitted ? "opacity-50 pointer-events-none" : ""
@@ -400,7 +477,7 @@ export default function App() {
                 🎉 You scored{" "}
                 {
                   Object.keys(userAnswers).filter(
-                    (i) => userAnswers[i] === questions[i].answer
+                    (i) => userAnswers[i] === questions[i].answer,
                   ).length
                 }{" "}
                 / {questions.length}
